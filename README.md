@@ -4,25 +4,24 @@ A comprehensive presentation and demo application covering all TypeScript featur
 
 ## 📋 Table of Contents
 
-- [Overview](#-overview)
-- [Project Structure](#-project-structure)
-- [Features](#-features)
-- [Installation](#-installation)
-- [Usage](#-usage)
-- [Presentation Content](#-presentation-content)
-- [Demo App](#-demo-app)
-- [Backend Servers](#-backend-servers)
-- [TypeScript Configuration](#-typescript-configuration)
-- [CI/CD](#-cicd)
-- [Resources](#-resources)
-- [Kahoot Quiz](#-kahoot-quiz)
-- [Technologies Used](#-technologies-used)
-- [Resources](#-resources)
-- [Key Takeaways](#-key-takeaways)
-- [Contributing](#-contributing)
-- [License](#-license)
-- [Author](#-author)
-- [Acknowledgments](#-acknowledgments)
+- [🎯 Overview](#-overview)
+- [📁 Project Structure](#-project-structure)
+- [✨ Features](#-features)
+- [🚀 Installation](#-installation)
+- [💻 Usage](#-usage)
+- [📚 Presentation Content](#-presentation-content)
+- [🎮 Demo App](#-demo-app)
+- [💻 Backend Servers](#-backend-servers)
+- [🔧 TypeScript Configuration](#-typescript-configuration)
+- [🔄 CI/CD](#-cicd)
+- [📖 Kahoot Quiz](#-kahoot-quiz)
+- [⚡ Technologies Used](#-technologies-used)
+- [📚 Resources](#-resources)
+- [🎯 Key Takeaways](#-key-takeaways)
+- [🤝 Contributing](#-contributing)
+- [📝 License](#-license)
+- [👤 Author](#-author)
+- [🙏 Acknowledgments](#-acknowledgments)
 
 ## 🎯 Overview
 
@@ -345,7 +344,7 @@ Two live backend servers for demonstrating real-world type generation:
 
 4. **Frontend automatically gets updated types** with full autocomplete!
 
-## ⚙️ TypeScript Configuration
+## 🔧 TypeScript Configuration
 
 The project uses a comprehensive `tsconfig.json` with all important options:
 
@@ -428,7 +427,7 @@ The `kahoot-questions.md` file contains 20 carefully crafted questions covering:
 
 Use these questions on **kahoot.com** during the presentation.
 
-## 🛠️ Technologies Used
+## ⚡ Technologies Used
 
 ### Core
 
