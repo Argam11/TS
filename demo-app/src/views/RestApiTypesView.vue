@@ -1,3 +1,8 @@
+<script setup lang="ts">
+import CodeBlock from '@/components/CodeBlock.vue';
+import InfoSection from '@/components/InfoSection.vue';
+</script>
+
 <template>
   <div>
     <v-container>
@@ -16,7 +21,7 @@
             <v-card-title>OpenAPI Specification</v-card-title>
             <v-card-text>
               <p class="mb-4">Example at <code>/api-spec.yaml</code></p>
-              <pre class="code-block"><code>paths:
+              <CodeBlock language="yaml" :code="`paths:
   /users/{userId}:
     get:
       parameters:
@@ -29,7 +34,7 @@
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'</code></pre>
+                $ref: '#/components/schemas/User'`" />
             </v-card-text>
           </v-card>
         </v-col>
@@ -38,9 +43,9 @@
           <v-card>
             <v-card-title>Generated TypeScript Types</v-card-title>
             <v-card-text>
-              <p class="mb-4">Run <code>npm run openapi:generate</code></p>
-              <pre class="code-block"><code>export interface paths {
-  "/users/{userId}": {
+              <p class="mb-4">Run <code>npm run generate:rest</code></p>
+              <CodeBlock :code="`export interface paths {
+  &quot;/users/{userId}&quot;: {
     get: {
       parameters: {
         path: { userId: string };
@@ -48,29 +53,33 @@
       responses: {
         200: {
           content: {
-            "application/json": User;
+            &quot;application/json&quot;: User;
           };
         };
       };
     };
   };
-}</code></pre>
+}`" />
             </v-card-text>
           </v-card>
+        </v-col>
+      </v-row>
+
+      <v-row class="mt-4">
+        <v-col cols="12">
+          <InfoSection 
+            title="OpenAPI Type Generation Benefits"
+            :items="[
+              '<strong>Type-safe API calls</strong> - Know all endpoints and their parameters',
+              '<strong>Request/Response types</strong> - Full typing for all API operations',
+              '<strong>Path validation</strong> - Catch typos in API paths',
+              '<strong>Auto-generated clients</strong> - Create typed API clients automatically',
+              '<strong>Contract testing</strong> - Ensure frontend matches backend spec'
+            ]"
+          />
         </v-col>
       </v-row>
     </v-container>
   </div>
 </template>
-
-<style scoped>
-.code-block {
-  background-color: rgba(0, 0, 0, 0.2);
-  padding: 16px;
-  border-radius: 4px;
-  overflow-x: auto;
-  font-size: 14px;
-  line-height: 1.5;
-}
-</style>
 

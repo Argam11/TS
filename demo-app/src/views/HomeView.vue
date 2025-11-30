@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import InfoSection from '@/components/InfoSection.vue';
 
 interface Feature {
   title: string;
@@ -9,11 +10,18 @@ interface Feature {
 }
 
 const features = ref<Feature[]>([
+  // Row 1: Foundations
   {
     title: 'Basic Types',
     description: 'Primitives, arrays, tuples, enums, and special types',
     icon: 'mdi-alpha-t-box',
     route: '/basic-types',
+  },
+  {
+    title: 'Type Inference',
+    description: 'Explicit vs implicit typing and best practices',
+    icon: 'mdi-lightbulb-on',
+    route: '/type-inference',
   },
   {
     title: 'Generics',
@@ -27,6 +35,14 @@ const features = ref<Feature[]>([
     icon: 'mdi-toolbox',
     route: '/utility-types',
   },
+  
+  // Row 2: Core Features
+  {
+    title: 'Type Guards',
+    description: 'Safely narrow types at runtime',
+    icon: 'mdi-shield-check',
+    route: '/type-guards',
+  },
   {
     title: 'Conditional Types',
     description: 'Types that depend on conditions with infer keyword',
@@ -39,17 +55,33 @@ const features = ref<Feature[]>([
     icon: 'mdi-map',
     route: '/mapped-types',
   },
-  {
-    title: 'Type Guards',
-    description: 'Safely narrow types at runtime',
-    icon: 'mdi-shield-check',
-    route: '/type-guards',
-  },
+  
+  // Row 3: Advanced Types
   {
     title: 'Template Literals',
     description: 'Type-level string manipulation',
     icon: 'mdi-format-text',
     route: '/template-literals',
+  },
+  {
+    title: 'Vue + TypeScript',
+    description: 'Props, emits, refs, composables with full type safety',
+    icon: 'mdi-vuejs',
+    route: '/vue-typescript',
+  },
+  {
+    title: 'Form Validation',
+    description: 'Type-safe forms with Zod and Vuetify',
+    icon: 'mdi-form-select',
+    route: '/form-validation',
+  },
+  
+  // Row 4: Vue.js & API Integration
+  {
+    title: 'State Management',
+    description: 'Type-safe stores with Pinia',
+    icon: 'mdi-database',
+    route: '/state-management',
   },
   {
     title: 'API Integration',
@@ -63,23 +95,13 @@ const features = ref<Feature[]>([
     icon: 'mdi-graphql',
     route: '/graphql-types',
   },
+  
+  // Row 5: Code Generation
   {
     title: 'REST API Types',
     description: 'Generate types from OpenAPI/Swagger specs',
     icon: 'mdi-web',
     route: '/rest-api-types',
-  },
-  {
-    title: 'Form Validation',
-    description: 'Type-safe forms with Zod and Vuetify',
-    icon: 'mdi-form-select',
-    route: '/form-validation',
-  },
-  {
-    title: 'State Management',
-    description: 'Type-safe stores with Pinia',
-    icon: 'mdi-database',
-    route: '/state-management',
   },
 ]);
 </script>
@@ -129,25 +151,17 @@ const features = ref<Feature[]>([
 
       <v-row class="mt-8">
         <v-col cols="12">
-          <v-card color="primary" variant="tonal">
-            <v-card-title>About This Demo</v-card-title>
-            <v-card-text>
-              <p class="mb-4">
-                This demo application showcases all TypeScript features and their
-                real-world applications with Vue 3. Each section includes:
-              </p>
-              <ul class="mb-4">
-                <li>Comprehensive code examples</li>
-                <li>Interactive demonstrations</li>
-                <li>Best practices and patterns</li>
-                <li>Real-world use cases</li>
-              </ul>
-              <p>
-                All code is fully typed with TypeScript and follows modern best practices.
-                Explore the navigation menu to dive into specific topics.
-              </p>
-            </v-card-text>
-          </v-card>
+          <InfoSection 
+            title="About This Demo"
+            :items="[
+              '<strong>Comprehensive code examples</strong> - All TypeScript features covered',
+              '<strong>Interactive demonstrations</strong> - Live examples you can explore',
+              '<strong>Best practices and patterns</strong> - Modern TypeScript patterns',
+              '<strong>Real-world use cases</strong> - Practical applications with Vue 3',
+              '<strong>Type-safe development</strong> - Full TypeScript typing throughout',
+              '<strong>Modern tooling</strong> - GraphQL, REST API, Zod validation, and Pinia'
+            ]"
+          />
         </v-col>
       </v-row>
     </v-container>

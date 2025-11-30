@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import TypeSafeForm from '@/components/TypeSafeForm.vue';
+import CodeBlock from '@/components/CodeBlock.vue';
+import InfoSection from '@/components/InfoSection.vue';
 </script>
 
 <template>
@@ -20,21 +22,21 @@ import TypeSafeForm from '@/components/TypeSafeForm.vue';
         </v-col>
 
         <v-col cols="12" md="4">
-          <v-card color="info" variant="tonal">
-            <v-card-title>How It Works</v-card-title>
+          <InfoSection 
+            class="mb-4"
+            title="How It Works"
+            :items="[
+              'Runtime type checking',
+              'Compile-time type inference',
+              'Automatic TypeScript types',
+              'Custom validation rules'
+            ]"
+          />
+          
+          <v-card>
+            <v-card-title class="text-subtitle-1">Schema Example</v-card-title>
             <v-card-text>
-              <p class="mb-4">
-                This form uses <strong>Zod</strong> for schema validation, providing:
-              </p>
-              <ul class="mb-4">
-                <li>Runtime type checking</li>
-                <li>Compile-time type inference</li>
-                <li>Automatic TypeScript types</li>
-                <li>Custom validation rules</li>
-              </ul>
-              
-              <p class="mb-2"><strong>Schema Definition:</strong></p>
-              <pre class="code-small">const schema = z.object({
+              <CodeBlock :code="`const schema = z.object({
   username: z.string().min(3),
   email: z.string().email(),
   password: z.string().min(8),
@@ -43,7 +45,7 @@ import TypeSafeForm from '@/components/TypeSafeForm.vue';
 });
 
 // Infer type!
-type FormData = z.infer&lt;typeof schema&gt;;</pre>
+type FormData = z.infer<typeof schema>;`" />
             </v-card-text>
           </v-card>
         </v-col>
@@ -54,7 +56,7 @@ type FormData = z.infer&lt;typeof schema&gt;;</pre>
           <v-card>
             <v-card-title>Schema Code</v-card-title>
             <v-card-text>
-              <pre class="code-block"><code>import { z } from 'zod';
+              <CodeBlock :code="`import { z } from 'zod';
 
 const formSchema = z.object({
   username: z.string()
@@ -81,14 +83,14 @@ const formSchema = z.object({
 });
 
 // Automatically infer TypeScript type from schema!
-type FormData = z.infer&lt;typeof formSchema&gt;;
+type FormData = z.infer<typeof formSchema>;
 // {
 //   username: string;
 //   email: string;
 //   password: string;
 //   age: number;
 //   terms: boolean;
-// }</code></pre>
+// }`" />
             </v-card-text>
           </v-card>
         </v-col>
@@ -97,23 +99,4 @@ type FormData = z.infer&lt;typeof formSchema&gt;;
   </div>
 </template>
 
-<style scoped>
-.code-block {
-  background-color: rgba(0, 0, 0, 0.2);
-  padding: 16px;
-  border-radius: 4px;
-  overflow-x: auto;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.code-small {
-  background-color: rgba(0, 0, 0, 0.2);
-  padding: 12px;
-  border-radius: 4px;
-  overflow-x: auto;
-  font-size: 12px;
-  line-height: 1.4;
-}
-</style>
 

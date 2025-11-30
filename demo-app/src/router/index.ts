@@ -12,6 +12,16 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/BasicTypesView.vue'),
   },
   {
+    path: '/type-inference',
+    name: 'TypeInference',
+    component: () => import('../views/TypeInferenceView.vue'),
+  },
+  {
+    path: '/vue-typescript',
+    name: 'VueTypeScript',
+    component: () => import('../views/VueTypeScriptView.vue'),
+  },
+  {
     path: '/generics',
     name: 'Generics',
     component: () => import('../views/GenericsView.vue'),

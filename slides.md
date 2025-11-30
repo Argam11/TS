@@ -164,6 +164,40 @@ function logMessage(msg: string): void {
 
 ---
 
+# Type Inference vs Type Annotations
+
+TypeScript can infer types automatically or you can be explicit
+
+```typescript
+// Implicit (Type Inference) - TypeScript figures it out
+let message = "Hello";        // inferred as string
+let count = 42;               // inferred as number
+let isActive = true;          // inferred as boolean
+
+// Explicit (Type Annotations) - You tell TypeScript
+let message: string = "Hello";
+let count: number = 42;
+let isActive: boolean = true;
+```
+
+## Best Practices
+
+- Use inference for simple, obvious cases
+- Use explicit types for function parameters and return values
+- Use explicit types for complex objects or when clarity helps
+
+```typescript
+// Good: Explicit for function signatures
+function greet(name: string): string {
+  return `Hello, ${name}`;
+}
+
+// Good: Inference for simple variables
+const doubled = count * 2;  // inferred as number
+```
+
+---
+
 # Arrays, Tuples & Enums
 
 Collections and enumerations
