@@ -4,16 +4,25 @@ A comprehensive presentation and demo application covering all TypeScript featur
 
 ## 📋 Table of Contents
 
-- [Overview](#overview)
-- [Project Structure](#project-structure)
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Presentation Content](#presentation-content)
-- [Demo App](#demo-app)
-- [TypeScript Configuration](#typescript-configuration)
-- [CI/CD](#cicd)
-- [Resources](#resources)
+- [Overview](#-overview)
+- [Project Structure](#-project-structure)
+- [Features](#-features)
+- [Installation](#-installation)
+- [Usage](#-usage)
+- [Presentation Content](#-presentation-content)
+- [Demo App](#-demo-app)
+- [Backend Servers](#-backend-servers)
+- [TypeScript Configuration](#-typescript-configuration)
+- [CI/CD](#-cicd)
+- [Resources](#-resources)
+- [Kahoot Quiz](#-kahoot-quiz)
+- [Technologies Used](#-technologies-used)
+- [Resources](#-resources)
+- [Key Takeaways](#-key-takeaways)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Author](#-author)
+- [Acknowledgments](#-acknowledgments)
 
 ## 🎯 Overview
 
@@ -25,7 +34,7 @@ This project provides a complete educational resource for TypeScript and Vue 3, 
 - **Real-World Examples**: API integration, form validation, state management, and more
 - **Production-Ready Setup**: Complete CI/CD, type checking, and best practices
 
-## 📁Project Structure
+## 📁 Project Structure
 
 ```
 TS/
