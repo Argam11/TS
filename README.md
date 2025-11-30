@@ -300,7 +300,7 @@ Each section includes:
 - Best practices
 - Real-world use cases
 
-## 🖥️ Backend Servers
+## 💻 Backend Servers
 
 Two live backend servers for demonstrating real-world type generation:
 
