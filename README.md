@@ -4,7 +4,7 @@ A comprehensive presentation and demo application covering all TypeScript featur
 
 ## 📋 Table of Contents
 
-- [🎯 Overview](#-overview)
+🎯 [Overview](#-overview)
 - [📁 Project Structure](#-project-structure)
 - [✨ Features](#-features)
 - [🚀 Installation](#-installation)
