@@ -14,6 +14,15 @@ title: TypeScript & Vue 3 Mastery
 mdc: true
 ---
 
+<style>
+  .slidev-page {
+    overflow: auto;
+  }
+  .slidev-layout {
+    height: auto;
+  }
+</style>
+
 # TypeScript & Vue 3 Mastery
 
 A Deep Dive into Modern Type-Safe Development
@@ -1761,13 +1770,13 @@ Explore all examples interactively
 - Run locally
 - Experiment with types
 
-</v-clicks>
-
 <div class="mt-8 text-center">
   <a href="http://localhost:5173" target="_blank" class="text-blue-400 hover:text-blue-300">
     🚀 Open Demo App
   </a>
 </div>
+</v-clicks>
+
 
 ---
 layout: center
