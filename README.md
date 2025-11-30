@@ -25,7 +25,7 @@ This project provides a complete educational resource for TypeScript and Vue 3, 
 - **Real-World Examples**: API integration, form validation, state management, and more
 - **Production-Ready Setup**: Complete CI/CD, type checking, and best practices
 
-## 📁 Project Structure
+## 📁Project Structure
 
 ```
 TS/
