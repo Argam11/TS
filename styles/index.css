@@ -1,0 +1,34 @@
+/* Global styles for Slidev presentation */
+
+/* Make slides scrollable when content is too tall */
+.slidev-layout {
+  max-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar styling */
+.slidev-layout::-webkit-scrollbar {
+  width: 8px;
+}
+
+.slidev-layout::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.slidev-layout::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.slidev-layout::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Firefox scrollbar */
+.slidev-layout {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.05);
+}
+

@@ -1,0 +1,26 @@
+overwrite: true
+schema: "http://localhost:4000/graphql"
+documents: "./demo-app/src/**/*.graphql"
+generates:
+  ./demo-app/src/generated/graphql.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+    config:
+      skipTypename: false
+      withHooks: false
+      withHOC: false
+      withComponent: false
+      enumsAsTypes: true
+      constEnums: true
+      immutableTypes: true
+      maybeValue: T | null
+      inputMaybeValue: T | null | undefined
+      avoidOptionals:
+        field: false
+        inputValue: false
+        object: false
+      scalars:
+        DateTime: string
+        JSON: Record<string, any>
+

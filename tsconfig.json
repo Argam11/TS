@@ -1,0 +1,85 @@
+{
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "ES2022",                          // Specify ECMAScript target version
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],   // List of library files to include in compilation
+    "jsx": "preserve",                           // Specify JSX code generation for Vue
+    "experimentalDecorators": true,              // Enable experimental support for decorators
+    "emitDecoratorMetadata": true,               // Emit design-type metadata for decorated declarations
+    "useDefineForClassFields": true,             // Use Define semantics for class fields
+
+    /* Modules */
+    "module": "ESNext",                          // Specify module code generation
+    "moduleResolution": "bundler",               // Strategy for resolving module specifiers
+    "resolveJsonModule": true,                   // Allow importing .json files
+    "allowImportingTsExtensions": true,          // Allow imports with TypeScript extensions
+    "baseUrl": ".",                              // Base directory for resolving non-relative modules
+    "paths": {                                   // Path mapping for module resolution
+      "@/*": ["./src/*"],
+      "@components/*": ["./components/*"],
+      "@demo/*": ["./demo-app/src/*"]
+    },
+    "types": ["vite/client", "node"],           // Type declaration files to include
+
+    /* JavaScript Support */
+    "allowJs": false,                            // Allow JavaScript files to be compiled
+    "checkJs": false,                            // Report errors in JavaScript files
+
+    /* Emit */
+    "declaration": true,                         // Generate .d.ts files
+    "declarationMap": true,                      // Generate sourcemap for .d.ts files
+    "sourceMap": true,                           // Generate source map files
+    "outDir": "./dist",                          // Redirect output structure to directory
+    "removeComments": false,                     // Keep comments in output
+    "noEmit": true,                              // Do not emit output (only type checking for Slidev/Vite)
+    "importHelpers": true,                       // Import emit helpers from tslib
+    "importsNotUsedAsValues": "remove",          // Remove imports that only reference types
+    "downlevelIteration": true,                  // Provide full support for iterables in for-of, spread, etc.
+    "preserveConstEnums": true,                  // Do not erase const enum declarations
+
+    /* Interop Constraints */
+    "isolatedModules": true,                     // Ensure each file can be safely transpiled (required by Vite)
+    "allowSyntheticDefaultImports": true,        // Allow default imports from modules with no default export
+    "esModuleInterop": true,                     // Emit additional JS to ease support for importing CommonJS
+    "forceConsistentCasingInFileNames": true,    // Ensure consistent casing in file names
+
+    /* Type Checking - Strict Mode (Enable ALL strict checks) */
+    "strict": true,                              // Enable all strict type checking options
+    "noImplicitAny": true,                       // Error on expressions and declarations with implied 'any'
+    "strictNullChecks": true,                    // Enable strict null checks
+    "strictFunctionTypes": true,                 // Enable strict checking of function types
+    "strictBindCallApply": true,                 // Enable strict 'bind', 'call', and 'apply' methods
+    "strictPropertyInitialization": true,        // Ensure class properties are initialized
+    "noImplicitThis": true,                      // Error when 'this' has type 'any'
+    "alwaysStrict": true,                        // Parse in strict mode and emit "use strict"
+    "useUnknownInCatchVariables": true,          // Type catch clause variables as 'unknown' instead of 'any'
+
+    /* Additional Checks */
+    "noUnusedLocals": true,                      // Report errors on unused local variables
+    "noUnusedParameters": true,                  // Report errors on unused parameters
+    "noImplicitReturns": true,                   // Report error when not all code paths return a value
+    "noFallthroughCasesInSwitch": true,          // Report errors for fallthrough cases in switch
+    "noUncheckedIndexedAccess": true,            // Add undefined to indexed access types
+    "noImplicitOverride": true,                  // Ensure overriding members are marked with override
+    "noPropertyAccessFromIndexSignature": true,  // Require indexed access for keys declared with indexed type
+    "allowUnusedLabels": false,                  // Report errors on unused labels
+    "allowUnreachableCode": false,               // Report errors on unreachable code
+
+    /* Completeness */
+    "skipLibCheck": true,                        // Skip type checking of declaration files (for performance)
+    "skipDefaultLibCheck": true                  // Skip type checking of default library declaration files
+  },
+  "include": [
+    "src/**/*",
+    "components/**/*",
+    "slides.md",
+    "*.ts",
+    "*.vue"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "demo-app"
+  ]
+}
+

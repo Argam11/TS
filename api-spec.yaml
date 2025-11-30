@@ -1,0 +1,206 @@
+openapi: 3.0.0
+info:
+  title: Example REST API
+  description: Example REST API for OpenAPI type generation demo
+  version: 1.0.0
+
+servers:
+  - url: https://api.example.com/v1
+    description: Production server
+  - url: https://staging-api.example.com/v1
+    description: Staging server
+
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - id
+        - username
+        - email
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+          minLength: 3
+          maxLength: 50
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+        lastName:
+          type: string
+        avatar:
+          type: string
+          format: uri
+        createdAt:
+          type: string
+          format: date-time
+    
+    CreateUserRequest:
+      type: object
+      required:
+        - username
+        - email
+        - password
+      properties:
+        username:
+          type: string
+          minLength: 3
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        firstName:
+          type: string
+        lastName:
+          type: string
+    
+    Post:
+      type: object
+      required:
+        - id
+        - title
+        - content
+        - authorId
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+          maxLength: 200
+        content:
+          type: string
+        published:
+          type: boolean
+        authorId:
+          type: string
+          format: uuid
+        tags:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+
+paths:
+  /users:
+    get:
+      summary: Get all users
+      operationId: getUsers
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    
+    post:
+      summary: Create a new user
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /users/{userId}:
+    get:
+      summary: Get user by ID
+      operationId: getUserById
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /posts:
+    get:
+      summary: Get all posts
+      operationId: getPosts
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: authorId
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+

@@ -1,0 +1,65 @@
+# GraphQL Queries for Users
+
+query GetUsers($limit: Int, $offset: Int) {
+  users(limit: $limit, offset: $offset) {
+    id
+    username
+    email
+    firstName
+    lastName
+    avatar
+    createdAt
+  }
+}
+
+query GetUser($id: ID!) {
+  user(id: $id) {
+    id
+    username
+    email
+    firstName
+    lastName
+    avatar
+    createdAt
+    posts {
+      id
+      title
+      published
+      createdAt
+    }
+  }
+}
+
+query GetMe {
+  me {
+    id
+    username
+    email
+    firstName
+    lastName
+    avatar
+    createdAt
+  }
+}
+
+mutation CreateUser($input: CreateUserInput!) {
+  createUser(input: $input) {
+    id
+    username
+    email
+    firstName
+    lastName
+    createdAt
+  }
+}
+
+mutation UpdateUser($id: ID!, $input: UpdateUserInput!) {
+  updateUser(id: $id, input: $input) {
+    id
+    username
+    email
+    firstName
+    lastName
+  }
+}
+

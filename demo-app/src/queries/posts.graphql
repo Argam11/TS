@@ -1,0 +1,68 @@
+# GraphQL Queries for Posts
+
+query GetPosts($authorId: ID, $limit: Int, $offset: Int) {
+  posts(authorId: $authorId, limit: $limit, offset: $offset) {
+    id
+    title
+    content
+    published
+    tags
+    createdAt
+    updatedAt
+    author {
+      id
+      username
+      firstName
+      lastName
+    }
+  }
+}
+
+query GetPost($id: ID!) {
+  post(id: $id) {
+    id
+    title
+    content
+    published
+    tags
+    createdAt
+    updatedAt
+    metadata
+    author {
+      id
+      username
+      email
+      firstName
+      lastName
+      avatar
+    }
+  }
+}
+
+mutation CreatePost($input: CreatePostInput!) {
+  createPost(input: $input) {
+    id
+    title
+    content
+    published
+    tags
+    createdAt
+    updatedAt
+  }
+}
+
+mutation UpdatePost($id: ID!, $input: UpdatePostInput!) {
+  updatePost(id: $id, input: $input) {
+    id
+    title
+    content
+    published
+    tags
+    updatedAt
+  }
+}
+
+mutation DeletePost($id: ID!) {
+  deletePost(id: $id)
+}
+
