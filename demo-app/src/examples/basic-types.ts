@@ -227,5 +227,9 @@ export const examples = {
     direction: currentDirection,
     color: favoriteColor,
   },
+  assertions: {
+    config: config,
+    colors: colors,
+  },
 };
 

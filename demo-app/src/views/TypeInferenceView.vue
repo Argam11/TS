@@ -1,34 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import CodeBlock from '@/components/CodeBlock.vue';
 import InfoSection from '@/components/InfoSection.vue';
-
-const pitfallsCode = computed(() => `// Problem: Too broad
-let data = null;  // Inferred as 'null' (not useful)
-data = { name: 'Alice' };  // ❌ Error!
-
-// Solution: Explicit type
-let data: { name: string } | null = null;
-data = { name: 'Alice' };  // ✅ OK
-
-// Problem: Any type
-const result = JSON.parse('{"name":"Alice"}');
-// result is 'any' - no type safety!
-
-// Solution: Type assertion or explicit type
-interface User { name: string; }
-const result = JSON.parse('{"name":"Alice"}') as User;
-// Now result is typed as User
-
-// Problem: Empty array
-const items = [];  // Inferred as any[]
-items.push('text');  // No error
-items.push(123);     // No error (not ideal!)
-
-// Solution: Explicit type
-const items: string[] = [];
-items.push('text');  // ✅ OK
-// items.push(123);  // ❌ Error!`);
 </script>
 
 <template>
@@ -51,16 +23,11 @@ items.push('text');  // ✅ OK
             <v-card-text>
               <p class="mb-3">TypeScript automatically determines the type:</p>
               <CodeBlock :code="`// TypeScript infers types automatically
-let message = &quot;Hello&quot;;     // string
-let count = 42;          // number
-let isActive = true;     // boolean
-let items = [1, 2, 3];   // number[]
-
-// Works great for simple cases
-const user = {
-  name: &quot;Alice&quot;,        // string
-  age: 30              // number
-};`" />
+let message = &quot;Hello&quot;;     // inferred as string
+let count = 42;          // inferred as number
+let price = 19.99;       // inferred as number
+let isActive = true;     // inferred as boolean
+let isValid = false;     // inferred as boolean`" />
             </v-card-text>
           </v-card>
         </v-col>
@@ -73,137 +40,124 @@ const user = {
               <CodeBlock :code="`// Explicit type annotations
 let message: string = &quot;Hello&quot;;
 let count: number = 42;
+let price: number = 19.99;
 let isActive: boolean = true;
-let items: number[] = [1, 2, 3];
-
-// Required for function parameters
-function greet(name: string): string {
-  return \`Hello, \${name}\`;
-}
-
-// Helpful for complex types
-let user: { name: string; age: number };`" />
+let isValid: boolean = false;`" />
             </v-card-text>
           </v-card>
         </v-col>
       </v-row>
 
-      <!-- Function Examples -->
+      <!-- When to Use Each -->
       <v-row>
         <v-col cols="12">
-          <h2 class="text-h4 mb-4">Function Type Annotations</h2>
+          <h2 class="text-h4 mb-4">When to Use Each Approach</h2>
         </v-col>
 
         <v-col cols="12" md="6">
           <v-card class="mb-4">
-            <v-card-title>Always Annotate Parameters</v-card-title>
+            <v-card-title>✅ Good Use of Inference</v-card-title>
             <v-card-text>
-              <CodeBlock :code="`// ❌ Bad: No type annotations
-function add(a, b) {
-  return a + b;  // a and b are 'any'
-}
+              <CodeBlock :code="`// Clear and obvious types
+let username = &quot;Alice&quot;;        // ✅ Obviously string
+let age = 30;                 // ✅ Obviously number
+let isLoggedIn = false;       // ✅ Obviously boolean
 
-// ✅ Good: Explicit parameter types
-function add(a: number, b: number): number {
-  return a + b;
-}
+// Calculations preserve types
+let total = 100;              // number
+let discount = 0.15;          // number
+let finalPrice = total * (1 - discount);  // ✅ number
 
-// Return type is inferred, but explicit is better
-function multiply(a: number, b: number) {
-  return a * b;  // inferred as number
+// String operations
+let firstName = &quot;John&quot;;
+let lastName = &quot;Doe&quot;;
+let fullName = firstName + &quot; &quot; + lastName;  // ✅ string`" />
+            </v-card-text>
+          </v-card>
+        </v-col>
+
+        <v-col cols="12" md="6">
+          <v-card class="mb-4">
+            <v-card-title>✅ Good Use of Explicit Types</v-card-title>
+            <v-card-text>
+              <CodeBlock :code="`// When you want to be clear and intentional
+let userId: string = &quot;user123&quot;;
+let timeout: number = 5000;
+let shouldRetry: boolean = true;
+
+// When value might change later
+let score: number;
+score = 0;        // Starts at 0
+score = 100;      // Updated later
+
+// When you need a wider type
+let id: string | number;
+id = 123;         // Can be number
+id = &quot;abc123&quot;;    // Or string`" />
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+
+      <!-- Common Scenarios -->
+      <v-row>
+        <v-col cols="12">
+          <h2 class="text-h4 mb-4">Common Scenarios</h2>
+        </v-col>
+
+        <v-col cols="12">
+          <v-card class="mb-4">
+            <v-card-title>Uninitialized Variables</v-card-title>
+            <v-card-text>
+              <CodeBlock :code="`// ❌ Bad: No type, defaults to 'any'
+let value;
+value = &quot;hello&quot;;
+value = 42;        // No error, but loses type safety
+
+// ✅ Good: Explicit type
+let value: string;
+// value = 42;     // ❌ Error! Can't assign number to string
+value = &quot;hello&quot;;   // ✅ OK`" />
+            </v-card-text>
+          </v-card>
+        </v-col>
+
+        <v-col cols="12">
+          <v-card class="mb-4">
+            <v-card-title>Type Widening</v-card-title>
+            <v-card-text>
+              <CodeBlock :code="`// Inference: type is widened to general type
+let status = &quot;pending&quot;;     // Type: string (wide)
+// status = &quot;approved&quot;;     // ✅ OK
+// status = &quot;rejected&quot;;     // ✅ OK
+// status = &quot;anything&quot;;     // ✅ OK (maybe too permissive)
+
+// Explicit: restrict to specific values
+let status: &quot;pending&quot; | &quot;approved&quot; | &quot;rejected&quot;;
+status = &quot;pending&quot;;        // ✅ OK
+status = &quot;approved&quot;;       // ✅ OK
+// status = &quot;anything&quot;;    // ❌ Error!`" />
+            </v-card-text>
+          </v-card>
+        </v-col>
+
+        <v-col cols="12">
+          <v-card class="mb-4">
+            <v-card-title>Nullable Values</v-card-title>
+            <v-card-text>
+              <CodeBlock :code="`// Problem: Starting with null
+let name = null;          // Type: null (too narrow)
+// name = &quot;Alice&quot;;        // ❌ Error!
+
+// Solution: Explicit union type
+let name: string | null = null;
+name = &quot;Alice&quot;;           // ✅ OK
+
+// Or use undefined for uninitialized
+let count: number | undefined;
+if (someCondition) {
+  count = 42;
 }`" />
-            </v-card-text>
-          </v-card>
-        </v-col>
-
-        <v-col cols="12" md="6">
-          <v-card class="mb-4">
-            <v-card-title>Arrow Function Annotations</v-card-title>
-            <v-card-text>
-              <CodeBlock :code="`// Explicit types for clarity
-const greet = (name: string): string => {
-  return \`Hello, \${name}\`;
-};
-
-// Type inference works well here
-const numbers = [1, 2, 3];
-const doubled = numbers.map(n => n * 2);
-// n is inferred as number
-// doubled is inferred as number[]
-
-// Callback types
-const callback: (value: number) => void = 
-  (value) => console.log(value);`" />
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
-
-      <!-- Object and Array Examples -->
-      <v-row>
-        <v-col cols="12">
-          <h2 class="text-h4 mb-4">Objects & Arrays</h2>
-        </v-col>
-
-        <v-col cols="12" md="6">
-          <v-card class="mb-4">
-            <v-card-title>When Inference Works Well</v-card-title>
-            <v-card-text>
-              <CodeBlock :code="`// Simple object - inference is great
-const point = { x: 10, y: 20 };
-// Inferred as { x: number; y: number }
-
-// Array with clear type
-const names = ['Alice', 'Bob', 'Charlie'];
-// Inferred as string[]
-
-// Inference from function return
-function getUser() {
-  return { name: 'Alice', age: 30 };
-}
-const user = getUser();
-// Inferred correctly`" />
-            </v-card-text>
-          </v-card>
-        </v-col>
-
-        <v-col cols="12" md="6">
-          <v-card class="mb-4">
-            <v-card-title>When to Be Explicit</v-card-title>
-            <v-card-text>
-              <CodeBlock :code="`// Interface for reusability
-interface Point {
-  x: number;
-  y: number;
-}
-
-const point: Point = { x: 10, y: 20 };
-
-// Empty arrays need explicit types
-const names: string[] = [];
-const users: User[] = [];
-
-// Optional properties
-const config: {
-  theme: string;
-  debug?: boolean;
-} = { theme: 'dark' };`" />
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
-
-      <!-- Common Pitfalls -->
-      <v-row>
-        <v-col cols="12">
-          <h2 class="text-h4 mb-4">Common Pitfalls</h2>
-        </v-col>
-
-        <v-col cols="12">
-          <v-card class="mb-4">
-            <v-card-title>When Inference Goes Wrong</v-card-title>
-            <v-card-text>
-              <CodeBlock :code="pitfallsCode" />
             </v-card-text>
           </v-card>
         </v-col>
@@ -215,13 +169,12 @@ const config: {
           <InfoSection 
             title="Best Practices"
             :items="[
-              '<strong>Use inference</strong> for simple, obvious cases where the type is clear',
-              '<strong>Always annotate</strong> function parameters and return values',
-              '<strong>Be explicit</strong> when the inferred type might be too broad (e.g., <code>any</code> or <code>null</code>)',
-              '<strong>Explicit is better</strong> for complex objects, interfaces, and public APIs',
-              '<strong>Trust inference</strong> for variable assignments with clear initialization',
-              '<strong>Empty arrays and objects</strong> usually need explicit types',
-              '<strong>Use type assertions</strong> sparingly and only when you know better than TypeScript'
+              '<strong>Use inference</strong> when the type is immediately clear from the value',
+              '<strong>Use explicit types</strong> for uninitialized variables',
+              '<strong>Be explicit</strong> when you need specific literal types or unions',
+              '<strong>Trust inference</strong> for simple assignments with primitive values',
+              '<strong>Explicit is better</strong> for variables that will be reassigned later',
+              '<strong>Consider your team</strong> - sometimes explicit types aid readability even when inference works'
             ]"
           />
         </v-col>
