@@ -14,15 +14,6 @@ title: TypeScript & Vue 3 Mastery
 mdc: true
 ---
 
-<style>
-  .slidev-page {
-    overflow: auto;
-  }
-  .slidev-layout {
-    height: auto;
-  }
-</style>
-
 # TypeScript & Vue 3 Mastery
 
 A Deep Dive into Modern Type-Safe Development
@@ -124,7 +115,7 @@ Every feature, every detail
 
 ---
 
-# Basic Types - Primitives
+# Basic Types
 
 The foundation of TypeScript's type system
 

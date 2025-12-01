@@ -1,10 +1,13 @@
 /* Global styles for Slidev presentation */
 
 /* Make slides scrollable when content is too tall */
+.slidev-page {
+  overflow: auto;
+  user-select: auto !important;
+}
+
 .slidev-layout {
-  max-height: 100vh;
-  overflow-y: auto;
-  overflow-x: hidden;
+  height: auto;
 }
 
 /* Custom scrollbar styling */
