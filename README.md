@@ -15,6 +15,7 @@ A comprehensive presentation and demo application covering all TypeScript featur
 🔧 [TypeScript Configuration](#-typescript-configuration)  
 🔄 [CI/CD](#-cicd)  
 📖 [Kahoot Quiz](#-kahoot-quiz)  
+🎬 [Live Coding](#-live-coding)  
 ⚡ [Technologies Used](#-technologies-used)  
 📚 [Resources](#-resources)  
 🎯 [Key Takeaways](#-key-takeaways)  
@@ -44,6 +45,10 @@ TS/
 ├── schema.graphql                     # Example GraphQL schema
 ├── api-spec.yaml                      # Example OpenAPI specification
 ├── kahoot-questions.md                # 20 quiz questions for Kahoot
+├── live-coding-starter.ts             # Live coding starting point
+├── live-coding-complete.ts            # Live coding complete solution
+├── LIVE_CODING_SCRIPT.md              # Step-by-step live coding guide
+├── LIVE_CODING_TIPS.md                # Tips for successful live coding
 ├── .github/workflows/
 │   └── typescript-check.yml           # CI/CD pipeline for type checking
 ├── components/                        # Vue components for slides
@@ -155,7 +160,7 @@ The presentation will be available at `http://localhost:3030`
 npm run demo:dev
 ```
 
-The demo app will be available at `http://localhost:5173`
+The demo app will be available at `http://localhost:5555`
 
 ### Running the Servers
 
@@ -426,6 +431,47 @@ The `kahoot-questions.md` file contains 20 carefully crafted questions covering:
 - Real-world scenarios (1 question)
 
 Use these questions on **kahoot.com** during the presentation.
+
+## 🎬 Live Coding
+
+The presentation includes a **7-minute live coding session** where you'll build a Type-Safe Database Query Builder from scratch.
+
+### Files Provided
+
+- **`live-coding-starter.ts`** - Starting point with TODO comments
+- **`live-coding-complete.ts`** - Complete solution with extensive comments
+- **`LIVE_CODING_SCRIPT.md`** - Step-by-step script with timing and talking points
+- **`LIVE_CODING_TIPS.md`** - Best practices and troubleshooting guide
+
+### What You'll Build
+
+A type-safe query builder demonstrating:
+- **Generics** (`<T>`) for reusability
+- **`keyof T`** for field name validation
+- **`Pick<T, K>`** for return type inference
+- **Method chaining** for fluent API
+- **Full autocomplete** and type checking
+
+### Example Usage
+
+```typescript
+const users = new QueryBuilder<User>()
+  .where('role', 'admin')      // ✅ Type-safe field & value
+  .orderBy('name', 'desc')     // ✅ Autocomplete works
+  .limit(10)
+  .offset(20)
+  .select('id', 'name', 'email'); // ✅ Result type: Pick<User, 'id' | 'name' | 'email'>[]
+```
+
+### Preparation Tips
+
+1. **Practice 3-5 times** using the script
+2. **Increase font size** to 16-18px for visibility
+3. **Show autocomplete** by pressing Ctrl+Space
+4. **Demonstrate errors** by intentionally making mistakes
+5. **Keep it under 7 minutes** - quality over quantity
+
+See `LIVE_CODING_TIPS.md` for complete preparation guide.
 
 ## ⚡ Technologies Used
 

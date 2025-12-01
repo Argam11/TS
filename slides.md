@@ -1522,6 +1522,8 @@ const handleSubmit = () => {
 - ✅ Great DX with autocomplete
 
 ---
+layout: default
+---
 
 # Pinia + TypeScript
 
@@ -1753,16 +1755,17 @@ class ProductFactory<T extends Product> {
 
 # Live Coding Time! 💻
 
-Let's build a type-safe feature together
+Let's build a **Type-Safe Database Query Builder**
 
 **We'll create:**
-1. A type-safe API client
-2. Zod schema for validation
-3. Vue component with TypeScript
-4. Pinia store integration
+1. Generic `QueryBuilder<T>` class
+2. Type-safe `.where()` method with `keyof`
+3. Type-safe `.select()` with `Pick<T, K>`
+4. Method chaining with `.orderBy()`, `.limit()`
+5. Full autocomplete & type checking!
 
 <div class="mt-8 p-4 bg-blue-500 bg-opacity-20 rounded">
-  Follow along or just watch - code will be available afterward!
+  ⏱️ ~7 minutes • Follow along or watch • Code available in repo!
 </div>
 
 ---
@@ -1796,7 +1799,7 @@ Explore all examples interactively
 - Experiment with types
 
 <div class="mt-8 text-center">
-  <a href="http://localhost:5173" target="_blank" class="text-blue-400 hover:text-blue-300">
+  <a href="http://localhost:5555" target="_blank" class="text-blue-400 hover:text-blue-300">
     🚀 Open Demo App
   </a>
 </div>
@@ -1804,8 +1807,7 @@ Explore all examples interactively
 
 
 ---
-layout: center
-class: text-center
+layout: default
 ---
 
 # Key Takeaways

@@ -48,7 +48,7 @@ Opens at: http://localhost:3030
 ```bash
 npm run demo:dev
 ```
-Opens at: http://localhost:5173
+Opens at: http://localhost:5555
 
 **Terminal 3 - Backend Servers:**
 ```bash
@@ -181,7 +181,7 @@ const newUser = await restClient.createUser({
 
 4. **Check All URLs**
    - ✓ Presentation: http://localhost:3030
-   - ✓ Demo App: http://localhost:5173
+   - ✓ Demo App: http://localhost:5555
    - ✓ GraphQL: http://localhost:4000/graphql
    - ✓ REST API: http://localhost:3000/api-docs
 
