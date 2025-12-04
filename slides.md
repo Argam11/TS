@@ -276,6 +276,85 @@ interface NumberDictionary {
   length: number; // OK
   name: string;   // Error! Must be number
 }
+
+// Interface merging - Interfaces with the same name merge automatically
+interface User {
+  id: number;
+  name: string;
+}
+
+interface User {
+  email: string;
+  age: number;
+}
+
+// Merged result: User has all properties
+const user: User = {
+  id: 1,
+  name: "Alice",
+  email: "alice@example.com",
+  age: 30
+};
+
+// Record<Keys, Type> - Create object types
+type UserRoles = Record<string, string>;
+const roles: UserRoles = {
+  admin: "Administrator",
+  user: "Regular User",
+  guest: "Guest User"
+};
+
+type UserStatus = "active" | "inactive" | "pending";
+type StatusMessages = Record<UserStatus, string>;
+const messages: StatusMessages = {
+  active: "User is active",
+  inactive: "User is inactive",
+  pending: "Awaiting approval"
+};
+
+// Record<K, V> vs {[key: K]: V} - Complete Comparison
+// Case 1: Basic usage - Functionally equivalent
+type Roles1 = Record<string, string>;
+type Roles2 = { [key: string]: string };
+
+// Case 2: Union keys - Record enforces all keys
+type Status = "active" | "inactive" | "pending";
+type StatusMap1 = Record<Status, string>; // ✅ Must have all 3 keys
+type StatusMap2 = { [key in Status]: string }; // ✅ Same with mapped type
+
+// Optional properties with mapped types
+type StatusMapOptional1 = Partial<Record<Status, string>>; // All optional
+type StatusMapOptional2 = { [key in Status]?: string }; // ✅ Same, shorter
+// Now you can omit some keys:
+const partialStatus: StatusMapOptional2 = { active: "Active" }; // ✅ OK
+
+// Case 3: Mixing specific + dynamic properties
+type AppConfig = {
+  version: string;           // ✅ Specific required property
+  apiUrl: string;            // ✅ Another specific property
+  [key: string]: string;     // ✅ Plus dynamic properties
+};
+// ❌ Record cannot do this easily
+
+// Case 4: Readonly modifier
+type ReadonlyRoles1 = Readonly<Record<string, string>>;
+type ReadonlyRoles2 = { readonly [key: string]: string };
+
+// Case 5: Optional properties vs Optional values
+// Using mapped types
+type OptionalProps = { [key in Status]?: string }; // Property can be omitted
+type OptionalValues = { [key in Status]: string | undefined }; // Must exist, can be undefined
+
+// Using Record
+type OptionalPropsRecord = Partial<Record<Status, string>>; // Same as OptionalProps
+type OptionalValuesRecord = Record<Status, string | undefined>; // Same as OptionalValues
+
+const config1: OptionalProps = { active: "Active" }; // ✅ inactive & pending omitted
+const config2: OptionalValues = { 
+  active: "Active", 
+  inactive: undefined,  // ✅ Must be present
+  pending: undefined    // ✅ Must be present
+};
 ```
 
 ---
@@ -285,15 +364,37 @@ interface NumberDictionary {
 Type-safe function signatures
 
 ```typescript
-// Function type
-type MathOperation = (a: number, b: number) => number;
+// Function declaration
+function add(a: number, b: number): number {
+  return a + b;
+}
 
-const add: MathOperation = (a, b) => a + b;
+// Arrow function - inline typing
+const multiply = (a: number, b: number): number => {
+  return a * b;
+};
+
+// Arrow function - concise syntax
+const subtract = (a: number, b: number): number => a - b;
+
+// Arrow function - with type alias
+type MathOperation = (a: number, b: number) => number;
+const divide: MathOperation = (a, b) => a / b;
+
+// Arrow function - return type inference
+const power = (base: number, exponent: number) => {
+  return Math.pow(base, exponent); // Type inferred as number
+};
 
 // Optional and default parameters
 function greet(name: string, greeting: string = "Hello"): string {
   return `${greeting}, ${name}!`;
 }
+
+// Arrow function with optional parameters
+const formatName = (first: string, last?: string): string => {
+  return last ? `${first} ${last}` : first;
+};
 
 // Rest parameters
 function sum(...numbers: number[]): number {
@@ -308,20 +409,161 @@ function createElement(tag: string): HTMLElement {
   return document.createElement(tag);
 }
 
-// this parameter type
-interface Database {
-  connect(this: Database): void;
-  query(this: Database, sql: string): any[];
+// Typing "this" in functions
+interface User {
+  name: string;
+  greet(this: User): void;
 }
 
-const db: Database = {
-  connect() {
-    console.log("Connected");
-  },
-  query(sql) {
-    return [];
+const user: User = {
+  name: "Alice",
+  greet() {
+    console.log(`Hello, ${this.name}`); // ✅ this is typed as User
   }
 };
+
+user.greet(); // ✅ Works
+const greetFn = user.greet;
+// greetFn(); // ❌ Error: The 'this' context is void
+
+// this parameter with methods
+interface Calculator {
+  value: number;
+  add(this: Calculator, n: number): Calculator;
+  multiply(this: Calculator, n: number): Calculator;
+}
+
+const calc: Calculator = {
+  value: 0,
+  add(n) {
+    this.value += n; // ✅ this is typed as Calculator
+    return this;
+  },
+  multiply(n) {
+    this.value *= n; // ✅ this is typed as Calculator
+    return this;
+  }
+};
+
+// Arrow functions DON'T have their own "this" - they capture outer context
+interface Button {
+  label: string;
+  onClick: () => void; // ✅ Arrow function captures outer "this"
+}
+
+const button: Button = {
+  label: "Click me",
+  onClick: () => {
+    // Arrow function doesn't have its own "this"
+    console.log("Button clicked");
+  }
+}
+```
+
+---
+
+# Classes in TypeScript
+
+Object-oriented programming with type safety
+
+```typescript
+// Basic class with types
+class User {
+  id: number;
+  name: string;
+  private password: string;    // Private - only inside class
+  protected role: string;      // Protected - class + subclasses
+  readonly createdAt: Date;    // Cannot be modified after init
+
+  constructor(id: number, name: string, password: string) {
+    this.id = id;
+    this.name = name;
+    this.password = password;
+    this.role = "user";
+    this.createdAt = new Date();
+  }
+
+  // Method
+  authenticate(pwd: string): boolean {
+    return this.password === pwd;
+  }
+
+  // Getter
+  get displayName(): string {
+    return `User: ${this.name}`;
+  }
+}
+
+// Parameter properties - shorter syntax
+class Product {
+  constructor(
+    public id: number,
+    public name: string,
+    private price: number
+  ) {} // Properties auto-created and assigned
+}
+
+const product = new Product(1, "Laptop", 999);
+console.log(product.id); // ✅ 1
+// console.log(product.price); // ❌ Error: private
+```
+
+---
+
+# Classes - Advanced Features
+
+Inheritance, abstract classes, and interfaces
+
+```typescript
+// Abstract class - cannot be instantiated
+abstract class Animal {
+  constructor(public name: string) {}
+  
+  abstract makeSound(): string; // Must be implemented
+  
+  move(): void {
+    console.log(`${this.name} is moving`);
+  }
+}
+
+class Dog extends Animal {
+  makeSound(): string {
+    return "Woof!";
+  }
+}
+
+// Implementing interfaces
+interface Drawable {
+  draw(): void;
+}
+
+interface Resizable {
+  resize(scale: number): void;
+}
+
+class Shape implements Drawable, Resizable {
+  constructor(private size: number) {}
+  
+  draw(): void {
+    console.log("Drawing shape");
+  }
+  
+  resize(scale: number): void {
+    this.size *= scale;
+  }
+}
+
+// Static members
+class MathUtils {
+  static PI = 3.14159;
+  
+  static calculateArea(radius: number): number {
+    return this.PI * radius * radius;
+  }
+}
+
+console.log(MathUtils.PI); // ✅ 3.14159
+// No need to instantiate!
 ```
 
 ---
