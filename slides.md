@@ -478,8 +478,8 @@ Object-oriented programming with type safety
 ```typescript
 // Basic class with types
 class User {
-  id: number;
-  name: string;
+  id: number;                  // Public by default (no modifier needed)
+  public name: string;         // Public - accessible everywhere (default)
   private password: string;    // Private - only inside class
   protected role: string;      // Protected - class + subclasses
   readonly createdAt: Date;    // Cannot be modified after init
@@ -500,6 +500,11 @@ class User {
   // Getter
   get displayName(): string {
     return `User: ${this.name}`;
+  }
+
+  // Setter
+  set displayName(value: string) {
+    this.name = value.replace("User: ", "");
   }
 }
 
@@ -587,8 +592,28 @@ function identity<T>(arg: T): T {
   return arg;
 }
 
-const num = identity(42);      // T is number
-const str = identity("hello"); // T is string
+// Way 1: Explicit type specification
+const num = identity<number>(42);      // ✅ Explicitly set T = number
+
+// Way 2: Type inference (TypeScript infers from the argument type)
+const str = identity("hello");         // ✅ T inferred as string (from "hello": string)
+const bool = identity(true);           // ✅ T inferred as boolean (from true: boolean)
+
+// Multiple type parameters - each inferred from its corresponding argument
+function pair<T, U>(first: T, second: U): [T, U] {
+  return [first, second];
+}
+
+const p1 = pair("hello", 42);          // ✅ T = string (from 1st arg), U = number (from 2nd arg)
+const p2 = pair<string, boolean>("hi", true); // ✅ Explicit types
+
+// Multiple arguments with same type - TypeScript infers from first matching argument
+function combine<T>(a: T, b: T): T[] {
+  return [a, b];
+}
+
+const nums = combine(1, 2);            // ✅ T = number (from both args)
+// const mixed = combine(1, "two");    // ❌ Error: args must be same type
 
 // Generic interfaces
 interface Box<T> {
@@ -649,7 +674,7 @@ const user = { name: "Alice", age: 30 };
 const name = getProperty(user, "name"); // string
 const age = getProperty(user, "age");   // number
 
-// Generic defaults (TS 2.3+)
+// Generic defaults
 interface Response<T = any> {
   data: T;
   status: number;
