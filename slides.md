@@ -377,9 +377,18 @@ const multiply = (a: number, b: number): number => {
 // Arrow function - concise syntax
 const subtract = (a: number, b: number): number => a - b;
 
-// Arrow function - with type alias
+// Function type - built-in (not type-safe, avoid!)
+const anyFunc: Function = (a: number, b: number) => a + b;
+
+// Function type alias - arrow syntax
 type MathOperation = (a: number, b: number) => number;
 const divide: MathOperation = (a, b) => a / b;
+
+// Function type alias - call signature syntax (alternative)
+type MathFunction = {
+  (a: number, b: number): number;
+};
+const modulo: MathFunction = (a, b) => a % b;
 
 // Arrow function - return type inference
 const power = (base: number, exponent: number) => {
@@ -1263,6 +1272,181 @@ function initialize() {
   x = 10;
 }
 ```
+
+---
+layout: default
+---
+
+# Declaration Files (.d.ts)
+
+Type definitions without implementation
+
+```typescript
+// What are .d.ts files?
+// Declaration files that contain ONLY type information, no implementation
+// They describe the shape of existing JavaScript code
+
+// math.d.ts - Declaration file
+export function add(a: number, b: number): number;
+export function subtract(a: number, b: number): number;
+export const PI: number;
+
+// math.js - Implementation (separate file)
+export function add(a, b) {
+  return a + b;
+}
+export function subtract(a, b) {
+  return a - b;
+}
+export const PI = 3.14159;
+
+// Usage in TypeScript
+import { add, subtract, PI } from './math';
+add(1, 2); // ✅ TypeScript knows the types!
+// add('1', '2'); // ❌ Error: Type 'string' not assignable to 'number'
+```
+
+**Key characteristics:**
+- Files end with `.d.ts` extension
+- Contain only type declarations, no runtime code
+- Get stripped out during compilation
+- Used to add types to JavaScript code
+
+---
+layout: default
+---
+
+# Why Use Declaration Files?
+
+Benefits and use cases
+
+<v-clicks>
+
+## 1. Type JavaScript Libraries
+Add TypeScript support to existing JavaScript packages
+```typescript
+// lodash.d.ts (simplified)
+declare module 'lodash' {
+  export function map<T, U>(array: T[], fn: (item: T) => U): U[];
+  export function filter<T>(array: T[], predicate: (item: T) => boolean): T[];
+}
+```
+
+## 2. Ambient Declarations
+Describe global variables/functions from external sources
+```typescript
+// globals.d.ts
+declare const API_URL: string;
+declare function gtag(command: string, ...args: any[]): void;
+
+// Now available everywhere without imports
+console.log(API_URL); // ✅ TypeScript knows it exists
+gtag('event', 'page_view');
+```
+
+## 3. Third-Party Modules
+Type definitions for npm packages without built-in types
+```bash
+npm install --save-dev @types/lodash
+npm install --save-dev @types/react
+npm install --save-dev @types/node
+```
+
+</v-clicks>
+
+---
+layout: default
+---
+
+# Declaration Files - Use Cases
+
+Real-world scenarios
+
+```typescript
+// Use Case 1: Typing window object extensions
+// global.d.ts
+interface Window {
+  gtag: (command: string, ...args: any[]) => void;
+  dataLayer: any[];
+  myCustomAPI: {
+    init(): void;
+    track(event: string): void;
+  };
+}
+
+// Now use anywhere
+window.gtag('config', 'GA_MEASUREMENT_ID'); // ✅ Typed!
+window.myCustomAPI.init();
+
+// Use Case 2: Typing environment variables
+// env.d.ts
+declare namespace NodeJS {
+  interface ProcessEnv {
+    NODE_ENV: 'development' | 'production' | 'test';
+    API_URL: string;
+    API_KEY: string;
+    PORT?: string;
+  }
+}
+
+// Usage with autocomplete
+const apiUrl = process.env.API_URL; // ✅ string
+const env = process.env.NODE_ENV; // ✅ 'development' | 'production' | 'test'
+```
+
+---
+layout: default
+---
+
+# Declaration Files - Advanced
+
+Module augmentation and publishing
+
+```typescript
+// Use Case 3: Augmenting existing modules
+// vue-router.d.ts
+import 'vue-router';
+
+declare module 'vue-router' {
+  interface RouteMeta {
+    requiresAuth?: boolean;
+    roles?: string[];
+    title?: string;
+  }
+}
+
+// Now RouteMeta has custom properties
+const route = useRoute();
+if (route.meta.requiresAuth) { // ✅ TypeScript knows this property!
+  // redirect to login
+}
+
+// Use Case 4: Publishing a typed npm package
+// package.json
+{
+  "name": "my-library",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",  // 👈 Points to declaration file
+  "scripts": {
+    "build": "tsc"
+  }
+}
+
+// tsconfig.json for library
+{
+  "compilerOptions": {
+    "declaration": true,        // Generate .d.ts files
+    "declarationMap": true,     // Generate sourcemaps for .d.ts
+    "outDir": "./dist"
+  }
+}
+```
+
+**DefinitelyTyped (@types):**
+- Community repository of type definitions
+- 9000+ packages with type definitions
+- `npm install @types/package-name`
 
 ---
 layout: center
