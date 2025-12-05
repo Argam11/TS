@@ -290,7 +290,7 @@ export const customValidationSchema = z.object({
 );
 
 // Password strength validator
-const passwordStrengthSchema = z.string()
+z.string()
   .refine(
     (password) => {
       const hasLower = /[a-z]/.test(password);

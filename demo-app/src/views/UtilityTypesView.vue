@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { examples } from '@/examples/utility-types';
 import CodeBlock from '@/components/CodeBlock.vue';
 import InfoSection from '@/components/InfoSection.vue';
 </script>

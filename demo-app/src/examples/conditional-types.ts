@@ -104,7 +104,7 @@ export type T4 = TypeName<() => void>; // "function"
 // 1. Extract function argument types
 export type ArgumentTypes<F> = F extends (...args: infer A) => any ? A : never;
 
-function createUser(name: string, age: number, email: string): void {}
+function createUser(_name: string, _age: number, _email: string): void {}
 
 export type CreateUserArgs = ArgumentTypes<typeof createUser>;
 // [name: string, age: number, email: string]

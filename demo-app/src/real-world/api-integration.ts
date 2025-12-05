@@ -362,7 +362,7 @@ export async function example(): Promise<void> {
   }
 
   // Create user
-  const newUser = await userService.createUser({
+  await userService.createUser({
     username: "johndoe",
     email: "john@example.com",
     password: "secure123",
@@ -371,7 +371,7 @@ export async function example(): Promise<void> {
   });
 
   // Get posts with query builder
-  const query = new QueryBuilder()
+  new QueryBuilder()
     .where("published", true)
     .limit(10)
     .orderBy("createdAt", "DESC")

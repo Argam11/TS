@@ -20,11 +20,14 @@ const highlightedCode = ref('');
 
 const highlight = () => {
   const lang = language.value;
-  highlightedCode.value = Prism.highlight(
-    props.code,
-    Prism.languages[lang] || Prism.languages.typescript,
-    lang
-  );
+  const grammar = Prism.languages[lang] || Prism.languages.typescript;
+  if (grammar) {
+    highlightedCode.value = Prism.highlight(
+      props.code,
+      grammar,
+      lang
+    );
+  }
 };
 
 onMounted(() => {

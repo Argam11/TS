@@ -99,9 +99,9 @@ export function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
 }
 
 const user = { name: "Alice", age: 30, email: "alice@example.com" };
-const userName = getProperty(user, "name");   // string
-const userAge = getProperty(user, "age");     // number
-// const invalid = getProperty(user, "invalid"); // ❌ Error
+getProperty(user, "name");   // string
+getProperty(user, "age");     // number
+// getProperty(user, "invalid"); // ❌ Error
 
 // ==================== GENERIC DEFAULTS ====================
 
@@ -125,7 +125,7 @@ export function concat<T extends any[], U extends any[]>(
   return [...arr1, ...arr2];
 }
 
-const result1 = concat([1, 2], ["a", "b"]);
+concat([1, 2], ["a", "b"]);
 // Type: [number, number, string, string]
 
 // ==================== GENERIC TYPE ALIASES ====================
@@ -217,11 +217,11 @@ export class Result<T, E = Error> {
     return new Result<T, E>(false, undefined, error);
   }
 
-  isOk(): this is { value: T } {
+  isOk(): boolean {
     return this.ok;
   }
 
-  isError(): this is { error: E } {
+  isError(): boolean {
     return !this.ok;
   }
 

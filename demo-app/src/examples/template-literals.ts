@@ -156,7 +156,7 @@ export const deleteComments: Query = "DELETE * FROM comments";
 
 // Build type-safe paths
 export type PathSegment = string;
-export type Path<T extends PathSegment[]> = T extends [infer First, ...infer Rest]
+export type Path<T extends PathSegment[]> = T extends [infer First extends string, ...infer Rest]
   ? Rest extends PathSegment[]
     ? `/${First}${Path<Rest>}`
     : `/${First}`

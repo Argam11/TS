@@ -18,7 +18,7 @@
     "server:both": "cd server && npm run dev:both",
     "generate:gql": "graphql-codegen --config codegen.yml",
     "generate:rest": "openapi-typescript http://localhost:3000/api/swagger.json -o ./demo-app/src/generated/rest-api.ts",
-    "ci:check": "npm run type-check && npm run demo:type-check",
+    "ci:check": "npm run type-check && npm run type-check:demo",
     "setup": "npm install && cd demo-app && npm install && cd ../server && npm install"
   },
   "dependencies": {
@@ -33,9 +33,8 @@
     "@graphql-codegen/typescript-vue-apollo": "^4.0.0",
     "@types/node": "^20.10.0",
     "concurrently": "^8.2.2",
-    "openapi-typescript": "^6.7.0",
+    "openapi-typescript": "^7.10.1",
     "typescript": "^5.3.3",
     "vite": "^5.0.0"
   }
 }
-
