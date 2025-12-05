@@ -22,24 +22,24 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          cache: 'yarn'
       
       - name: Install dependencies
-        run: npm ci
+        run: yarn install
       
       - name: TypeScript type check (root)
-        run: npm run type-check
+        run: yarn type-check
       
       - name: Install demo-app dependencies
-        run: cd demo-app && npm ci
+        run: cd demo-app && yarn install
       
       - name: TypeScript type check (demo-app)
-        run: npm run demo:type-check
+        run: yarn type-check:demo
       
       - name: Build check
         run: |
-          npm run build
-          cd demo-app && npm run build
+          yarn build
+          cd demo-app && yarn build
       
       - name: Report status
         if: success()
