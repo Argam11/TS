@@ -14,7 +14,6 @@ A comprehensive presentation and demo application covering all TypeScript featur
 💻 [Backend Servers](#-backend-servers)  
 🔧 [TypeScript Configuration](#-typescript-configuration)  
 🔄 [CI/CD](#-cicd)  
-📖 [Kahoot Quiz](#-kahoot-quiz)  
 🎬 [Live Coding](#-live-coding)  
 ⚡ [Technologies Used](#-technologies-used)  
 📚 [Resources](#-resources)  
@@ -28,9 +27,8 @@ A comprehensive presentation and demo application covering all TypeScript featur
 
 This project provides a complete educational resource for TypeScript and Vue 3, including:
 
-- **Slidev Presentation**: 90-minute comprehensive presentation covering all TypeScript features
+- **Slidev Presentation**: 70-minute comprehensive presentation covering all TypeScript features
 - **Interactive Demo App**: Vue 3 application demonstrating every TypeScript concept
-- **Kahoot Quiz**: 20 questions to test knowledge
 - **Real-World Examples**: API integration, form validation, state management, and more
 - **Production-Ready Setup**: Complete CI/CD, type checking, and best practices
 
@@ -38,7 +36,7 @@ This project provides a complete educational resource for TypeScript and Vue 3, 
 
 ```
 TS/
-├── slides.md                          # Main Slidev presentation (90 min)
+├── slides.md                          # Main Slidev presentation (70 min)
 ├── package.json                       # Root dependencies and scripts
 ├── tsconfig.json                      # Comprehensive TypeScript configuration
 ├── codegen.yml                        # GraphQL Code Generator configuration
@@ -219,7 +217,7 @@ npm run ci:check
 
 ## 📚 Presentation Content
 
-### Part 1: TypeScript Fundamentals (47 min)
+### Part 1: TypeScript Fundamentals (27 min)
 
 1. **Introduction & History** (3 min)
    - TypeScript origins (Anders Hejlsberg, Microsoft, 2012)
@@ -238,11 +236,6 @@ npm run ci:check
    - Type guards
    - Template literals
    - Advanced features
-
-3. **Kahoot Game** (20 min)
-   - 15-20 interactive questions
-   - Mix of difficulties
-   - Live leaderboard
 
 ### Part 2: Real-World Applications (38 min)
 
@@ -415,22 +408,6 @@ jobs:
   "ci:check": "npm run type-check && npm run demo:type-check"
 }
 ```
-
-## 📖 Kahoot Quiz
-
-The `kahoot-questions.md` file contains 20 carefully crafted questions covering:
-
-- TypeScript history (1 question)
-- Basic types & interfaces (4 questions)
-- Generics (3 questions)
-- Utility types (3 questions)
-- Conditional types (2 questions)
-- Type guards (2 questions)
-- Template literals (2 questions)
-- Vue 3 + TS integration (2 questions)
-- Real-world scenarios (1 question)
-
-Use these questions on **kahoot.com** during the presentation.
 
 ## 🎬 Live Coding
 

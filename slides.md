@@ -200,12 +200,22 @@ let strings: Array<string> = ["a", "b", "c"];
 let mixed: (number | string)[] = [1, "two", 3];
 
 // Tuples - Fixed length arrays with specific types
+
+// 1. Regular tuples
 let person: [string, number] = ["Alice", 30];
 let rgb: [number, number, number] = [255, 0, 128];
 
-// Named tuples (TS 4.0+)
+// 2. Named tuples (labeled - TS 4.0+) - Better readability
 type Point = [x: number, y: number];
 let point: Point = [10, 20];
+
+type User = [id: number, name: string, isActive: boolean];
+const user: User = [1, "John", true];
+
+// 3. Variadic tuples (rest elements - TS 4.0+) - Variable length
+type StringNumberBooleans = [string, number, ...boolean[]];
+const data1: StringNumberBooleans = ["hello", 42, true, false, true];
+const data2: StringNumberBooleans = ["world", 10]; // OK, booleans optional
 
 // Enums - Numeric
 enum Direction {
@@ -237,6 +247,15 @@ const enum Color {
 Describing object shapes
 
 ```typescript
+// The "object" keyword - Any non-primitive type (no string, number, boolean, etc.)
+let obj: object;
+obj = { name: "Alice" };      // ✅ OK
+obj = [1, 2, 3];              // ✅ OK (arrays are objects)
+obj = () => {};               // ✅ OK (functions are objects)
+// obj = "hello";             // ❌ Error: string is primitive
+// obj = 42;                  // ❌ Error: number is primitive
+// obj = null;                // ❌ Error: null is not object type
+
 // Type aliases
 type User = {
   id: number;
@@ -608,12 +627,20 @@ const p1 = pair("hello", 42);          // ✅ T = string (from 1st arg), U = num
 const p2 = pair<string, boolean>("hi", true); // ✅ Explicit types
 
 // Multiple arguments with same type - TypeScript infers from first matching argument
-function combine<T>(a: T, b: T): T[] {
+const combine = <T>(a: T, b: T): T[] => {
   return [a, b];
-}
+};
 
 const nums = combine(1, 2);            // ✅ T = number (from both args)
+const names = combine("John", "Doe"); // ✅ T = "John" | "Doe" (union of literals!)
 // const mixed = combine(1, "two");    // ❌ Error: args must be same type
+
+// Arrow function in .tsx files - single generic (trailing comma needed!)
+const identity = <T,>(arg: T): T => {
+  return arg;
+};
+
+const result = identity("hello");      // ✅ T = string (comma prevents JSX conflict!)
 
 // Generic interfaces
 interface Box<T> {
@@ -790,6 +817,33 @@ type T = ThisParameterType<typeof toHex>; // Number
 // OmitThisParameter - Remove 'this' parameter
 type Func = OmitThisParameter<typeof toHex>; // () => string
 
+// NoInfer - Prevent type inference in generic positions (TS 5.4+)
+function createStreetLight<C extends string>(
+  colors: C[],
+  defaultColor?: NoInfer<C>  // Won't infer from this param
+) {
+  // ...
+}
+createStreetLight(["red", "yellow", "green"], "red");  // ✅ OK
+// createStreetLight(["red", "yellow", "green"], "blue"); // ❌ Error
+
+// ThisType - Specify 'this' type in object literals (no runtime impact)
+type User = {
+  name: string;
+  age: number;
+};
+
+const userMethods: ThisType<User> = {
+  greet() {
+    console.log(this.name);   // ✅ TypeScript knows 'this' has 'name'
+    console.log(this.age);    // ✅ TypeScript knows 'this' has 'age'
+  },
+  isAdult() {
+    return this.age >= 18;    // ✅ 'this.age' is properly typed
+  }
+};
+// ThisType<User> tells TS: "'this' inside methods refers to User type"
+
 // Custom utility type
 type Mutable<T> = {
   -readonly [P in keyof T]: T[P];
@@ -813,25 +867,25 @@ type A = IsString<string>;  // true
 type B = IsString<number>;  // false
 
 // With infer keyword - Extract types
-type ReturnType<T> = T extends (...args: any[]) => infer R ? R : never;
+type GetReturnType<T> = T extends (...args: any[]) => infer R ? R : never;
 
 type Func = () => number;
-type FuncReturn = ReturnType<Func>; // number
+type FuncReturn = GetReturnType<Func>; // number
 
 // Distributive conditional types
 type ToArray<T> = T extends any ? T[] : never;
 type StrArrOrNumArr = ToArray<string | number>; // string[] | number[]
 
 // Recursive conditional types
-type Awaited<T> = T extends Promise<infer U>
+type UnwrapPromise<T> = T extends Promise<infer U>
   ? U extends Promise<any>
-    ? Awaited<U>
+    ? UnwrapPromise<U>
     : U
   : T;
 
-type T1 = Awaited<Promise<string>>;                  // string
-type T2 = Awaited<Promise<Promise<number>>>;         // number
-type T3 = Awaited<Promise<Promise<Promise<boolean>>>>; // boolean
+type T1 = UnwrapPromise<Promise<string>>;                  // string
+type T2 = UnwrapPromise<Promise<Promise<number>>>;         // number
+type T3 = UnwrapPromise<Promise<Promise<Promise<boolean>>>>; // boolean
 
 // Real-world example - Flatten array type
 type Flatten<T> = T extends Array<infer U> ? U : T;
@@ -880,7 +934,11 @@ interface Person {
 }
 
 type LazyPerson = Getters<Person>;
-// { getName: () => string; getAge: () => number; getLocation: () => string; }
+// {
+//   getName: () => string;
+//   getAge: () => number;
+//   getLocation: () => string;
+// }
 
 // Filter out keys
 type RemoveKindField<T> = {
@@ -896,12 +954,15 @@ Safely narrowing types
 
 ```typescript
 // typeof type guards
-function padLeft(value: string, padding: string | number) {
-  if (typeof padding === "number") {
-    return " ".repeat(padding) + value;
+function double(value: string | number) {
+  if (typeof value === "number") {
+    return value * 2;        // TypeScript knows it's number
   }
-  return padding + value;
+  return value;              // TypeScript knows it's string
 }
+
+double(5);        // 10
+double("hello");  // "hello"
 
 // instanceof type guards
 class Dog { bark() {} }
@@ -975,15 +1036,15 @@ function processValue(value: unknown) {
   value.toUpperCase(); // TypeScript knows value is string
 }
 
-// 'in' operator narrowing
+// 'in' operator narrowing - Check if property exists in object
 type Fish = { swim: () => void };
 type Bird = { fly: () => void };
 
 function move(animal: Fish | Bird) {
-  if ("swim" in animal) {
-    animal.swim();
+  if ("swim" in animal) {      // Check if 'swim' property exists
+    animal.swim();              // TypeScript knows it's Fish
   } else {
-    animal.fly();
+    animal.fly();               // TypeScript knows it's Bird
   }
 }
 
@@ -1010,11 +1071,10 @@ Type-level string manipulation
 type World = "world";
 type Greeting = `hello ${World}`; // "hello world"
 
-// With unions
-type EmailLocaleIDs = "welcome_email" | "email_heading";
-type FooterLocaleIDs = "footer_title" | "footer_sendoff";
-type AllLocaleIDs = `${EmailLocaleIDs | FooterLocaleIDs}_id`;
-// "welcome_email_id" | "email_heading_id" | "footer_title_id" | "footer_sendoff_id"
+// With unions - Combine multiple string literals
+type Action = "click" | "hover" | "focus";
+type EventName = `on${Capitalize<Action>}`;
+// "onClick" | "onHover" | "onFocus"
 
 // String manipulation types
 type ASCIICacheKey<Str extends string> = `ID-${Uppercase<Str>}`;
@@ -1028,7 +1088,7 @@ type PropEventSource<Type> = {
   ): void;
 };
 
-declare function makeWatchedObject<T>(obj: T): T & PropEventSource<T>;
+declare function makeWatchedObject<T>(obj: T): PropEventSource<T>;
 
 const person = makeWatchedObject({
   firstName: "Saoirse",
@@ -1049,52 +1109,13 @@ person.on("ageChanged", newAge => {
 
 ---
 
-# Template Literal Types - Advanced
-
-Combining with mapped types
-
-```typescript
-// Extract route parameters
-type ExtractRouteParams<T extends string> = 
-  T extends `${infer _Start}:${infer Param}/${infer Rest}`
-    ? { [K in Param | keyof ExtractRouteParams<Rest>]: string }
-    : T extends `${infer _Start}:${infer Param}`
-    ? { [K in Param]: string }
-    : {};
-
-type Route1 = ExtractRouteParams<"/user/:id/post/:postId">;
-// { id: string; postId: string }
-
-// API endpoint builder
-type HTTPMethod = "GET" | "POST" | "PUT" | "DELETE";
-type Endpoint = "users" | "posts" | "comments";
-type APIRoute = `/${Lowercase<HTTPMethod>}/${Endpoint}`;
-
-// "/get/users" | "/get/posts" | ... | "/delete/comments"
-
-// CSS property builder
-type CSSValue = number | string;
-type CSSProperty = "color" | "background" | "fontSize";
-type CSSRule = `${CSSProperty}: ${string};`;
-
-const rule: CSSRule = "color: red;"; // Valid
-// const invalid: CSSRule = "color red"; // Error
-
-// Intrinsic string manipulation types
-type LowercaseGreeting = Lowercase<"HELLO WORLD">; // "hello world"
-type UppercaseGreeting = Uppercase<"hello world">; // "HELLO WORLD"
-type CapitalizedGreeting = Capitalize<"hello">; // "Hello"
-type UncapitalizedGreeting = Uncapitalize<"Hello">; // "hello"
-```
-
----
-
 # Advanced Features - Part 1
 
 Const assertions and satisfies
 
 ```typescript
-// Const assertions (as const)
+// Const assertions (as const) - Make values deeply readonly and literal
+// Prevents type widening and makes all properties readonly
 const numbers = [1, 2, 3]; // number[]
 const constNumbers = [1, 2, 3] as const; // readonly [1, 2, 3]
 
@@ -1108,25 +1129,34 @@ const constConfig = {
   timeout: 5000
 } as const; // { readonly endpoint: "https://api.example.com"; readonly timeout: 5000 }
 
-// Satisfies operator (TS 4.9+)
-type Color = { r: number; g: number; b: number } | string;
+// Satisfies operator (TS 4.9+) - Validates type without widening
+// Ensures value matches a type while keeping the exact literal types
+
+// Example 1: Validation - Catch type errors at compile time
+type Route = { path: string; method: "GET" | "POST" | "PUT" | "DELETE" };
+
+const routes = {
+  home: { path: "/", method: "GET" },
+  users: { path: "/users", method: "GET" },
+  // createUser: { path: "/users", method: "PATCH" }  // ❌ Error! "PATCH" not allowed
+} satisfies Record<string, Route>;
+
+// Example 2: Literal type preservation - Keep exact types
+type Color = [r: number, g: number, b: number] | string;
 
 const palette = {
   red: [255, 0, 0],
   green: "#00ff00",
   blue: [0, 0, 255]
 } satisfies Record<string, Color>;
+// {
+//    red: [number, number, number];
+//    green: string;
+//    blue: [number, number, number];
+//  }
 
-// Now we keep precise types!
-palette.red.map(x => x); // [255, 0, 0] - knows it's array
-palette.green.toUpperCase(); // "#00FF00" - knows it's string
-
-// Without satisfies, we'd lose precision
-const palette2: Record<string, Color> = {
-  red: [255, 0, 0],
-  green: "#00ff00",
-};
-// palette2.red.map(x => x); // Error! Type is Color, not specific array
+palette.red.map(x => x);         // ✅ Knows it's [255, 0, 0] array
+palette.green.toUpperCase();     // ✅ Knows it's "#00ff00" string
 ```
 
 ---
@@ -1136,52 +1166,40 @@ const palette2: Record<string, Color> = {
 Decorators (Experimental & Stage 3)
 
 ```typescript
-// Class decorator
-function sealed(constructor: Function) {
-  Object.seal(constructor);
-  Object.seal(constructor.prototype);
-}
-
-@sealed
-class BugReport {
-  type = "report";
-  title: string;
-  
-  constructor(title: string) {
-    this.title = title;
-  }
-}
-
-// Method decorator
-function log(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-  const originalMethod = descriptor.value;
-  
-  descriptor.value = function(...args: any[]) {
-    console.log(`Calling ${propertyKey} with`, args);
-    return originalMethod.apply(this, args);
+// Decorator - Add behavior to class methods
+function Double(target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
+  const original = descriptor.value;
+  descriptor.value = function(num: number) {
+    return original.call(this, num) * 2;
   };
-  
-  return descriptor;
 }
 
-class Calculator {
-  @log
-  add(a: number, b: number): number {
-    return a + b;
+class Math {
+  @Double
+  square(n: number): number {
+    return n * n;
   }
 }
 
-// Property decorator
-function readonly(target: any, propertyKey: string) {
-  Object.defineProperty(target, propertyKey, {
-    writable: false
-  });
+new Math().square(5);  // Returns: 50 (5² = 25, then × 2 = 50)
+
+// Log method calls
+function Log(target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
+  const original = descriptor.value;
+  descriptor.value = function(...args: unknown[]) {
+    console.log(`Called: ${propertyKey}`);
+    return original.apply(this, args);
+  };
 }
 
-class Person {
-  @readonly
-  name: string = "Alice";
+class Greeter {
+  @Log
+  sayHello(name: string): string {
+    return `Hello, ${name}!`;
+  }
 }
+
+new Greeter().sayHello("Alice");  // Logs: "Called: sayHello" → Returns: "Hello, Alice!"
 ```
 
 ---
@@ -1478,24 +1496,6 @@ layout: center
 class: text-center
 ---
 
-# 🎮 Time for a Game!
-
-## Kahoot Quiz - 20 Minutes
-
-Visit **kahoot.it** and enter the game PIN
-
-<div class="text-6xl mt-8 font-bold">
-  GAME PIN: XXXX
-</div>
-
-<div class="mt-8 text-xl opacity-75">
-  15-20 questions to test what we've learned!
-</div>
-
----
-layout: section
----
-
 # Part 2: Real-World Applications
 
 TypeScript in production
@@ -1601,8 +1601,11 @@ layout: two-cols
 ---
 
 # GraphQL Type Generation
+layout: two-cols
 
 Automatic types from GraphQL schema
+
+::left::
 
 **Setup:**
 ```bash
@@ -1812,16 +1815,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: 'yarn'
       
       - name: Install dependencies
-        run: npm ci
+        run: yarn install
       
       - name: TypeScript type check
-        run: npm run type-check
+        run: yarn type-check
       
       - name: Build check
-        run: npm run build
+        run: yarn build
 ```
 
 **package.json scripts:**
@@ -1840,188 +1843,6 @@ jobs:
 - ✅ Ensure code compiles
 - ✅ Prevent breaking changes
 - ✅ Fast feedback loop
-
----
-
-# Forms with Zod & Vuetify
-
-Type-safe form validation
-
-**Define schema with Zod:**
-```typescript
-import { z } from "zod";
-
-const userSchema = z.object({
-  username: z.string()
-    .min(3, "Username must be at least 3 characters")
-    .max(20, "Username must be less than 20 characters"),
-  email: z.string()
-    .email("Invalid email address"),
-  password: z.string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Z]/, "Password must contain uppercase letter")
-    .regex(/[0-9]/, "Password must contain a number"),
-  age: z.number()
-    .min(18, "Must be 18 or older")
-    .max(120, "Invalid age"),
-  terms: z.boolean()
-    .refine(val => val === true, "You must accept terms")
-});
-
-// Infer TypeScript type from Zod schema!
-type UserFormData = z.infer<typeof userSchema>;
-// { username: string; email: string; password: string; age: number; terms: boolean }
-```
-
----
-
-# Vuetify Form Component
-
-Type-safe Vue 3 + Vuetify + Zod
-
-```vue
-<script setup lang="ts">
-import { ref } from 'vue';
-import { z } from 'zod';
-import type { VForm } from 'vuetify/components';
-
-const userSchema = z.object({
-  username: z.string().min(3),
-  email: z.string().email(),
-  password: z.string().min(8),
-});
-
-type UserFormData = z.infer<typeof userSchema>;
-
-const formData = ref<UserFormData>({
-  username: '',
-  email: '',
-  password: '',
-});
-
-const errors = ref<Partial<Record<keyof UserFormData, string>>>({});
-const form = ref<VForm | null>(null);
-
-const validate = () => {
-  try {
-    userSchema.parse(formData.value);
-    errors.value = {};
-    return true;
-  } catch (err) {
-    if (err instanceof z.ZodError) {
-      errors.value = {};
-      err.errors.forEach(error => {
-        if (error.path[0]) {
-          errors.value[error.path[0] as keyof UserFormData] = error.message;
-        }
-      });
-    }
-    return false;
-  }
-};
-
-const handleSubmit = () => {
-  if (validate()) {
-    console.log('Form is valid!', formData.value);
-    // Submit to API
-  }
-};
-</script>
-```
-
----
-
-# Vuetify Form Template
-
-```vue
-<template>
-  <v-form ref="form" @submit.prevent="handleSubmit">
-    <v-text-field
-      v-model="formData.username"
-      label="Username"
-      :error-messages="errors.username"
-      @input="() => delete errors.username"
-    />
-    
-    <v-text-field
-      v-model="formData.email"
-      label="Email"
-      type="email"
-      :error-messages="errors.email"
-      @input="() => delete errors.email"
-    />
-    
-    <v-text-field
-      v-model="formData.password"
-      label="Password"
-      type="password"
-      :error-messages="errors.password"
-      @input="() => delete errors.password"
-    />
-    
-    <v-btn type="submit" color="primary">
-      Submit
-    </v-btn>
-  </v-form>
-</template>
-```
-
-**Benefits:**
-- ✅ Single source of truth (Zod schema)
-- ✅ Runtime validation
-- ✅ Compile-time type safety
-- ✅ Great DX with autocomplete
-
----
-layout: default
----
-
-# Pinia + TypeScript
-
-Type-safe state management
-
-```typescript
-import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
-
-// Option 1: Composition API style (recommended)
-export const useUserStore = defineStore('user', () => {
-  // State
-  const user = ref<User | null>(null);
-  const isLoading = ref(false);
-  
-  // Getters (computed)
-  const isAuthenticated = computed(() => user.value !== null);
-  const fullName = computed(() => 
-    user.value ? `${user.value.firstName} ${user.value.lastName}` : ''
-  );
-  
-  // Actions
-  async function login(username: string, password: string): Promise<void> {
-    isLoading.value = true;
-    try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        body: JSON.stringify({ username, password }),
-      });
-      user.value = await response.json();
-    } finally {
-      isLoading.value = false;
-    }
-  }
-  
-  function logout(): void {
-    user.value = null;
-  }
-  
-  return { user, isLoading, isAuthenticated, fullName, login, logout };
-});
-
-// Usage in component - fully typed!
-const userStore = useUserStore();
-userStore.login('alice', 'pass123'); // ✅ TypeScript knows the signature
-console.log(userStore.fullName); // ✅ Typed as string
-```
 
 ---
 
@@ -2086,6 +1907,188 @@ defineExpose({
     </button>
   </div>
 </template>
+```
+
+---
+
+# Vuetify Form Template
+
+```vue
+<template>
+  <v-form ref="form" @submit.prevent="handleSubmit">
+    <v-text-field
+      v-model="formData.username"
+      label="Username"
+      :error-messages="errors.username"
+      @input="() => delete errors.username"
+    />
+    
+    <v-text-field
+      v-model="formData.email"
+      label="Email"
+      type="email"
+      :error-messages="errors.email"
+      @input="() => delete errors.email"
+    />
+    
+    <v-text-field
+      v-model="formData.password"
+      label="Password"
+      type="password"
+      :error-messages="errors.password"
+      @input="() => delete errors.password"
+    />
+    
+    <v-btn type="submit" color="primary">
+      Submit
+    </v-btn>
+  </v-form>
+</template>
+```
+
+**Benefits:**
+- ✅ Single source of truth (Zod schema)
+- ✅ Runtime validation
+- ✅ Compile-time type safety
+- ✅ Great DX with autocomplete
+
+---
+
+# Vuetify Form Component
+
+Type-safe Vue 3 + Vuetify + Zod
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { z } from 'zod';
+import type { VForm } from 'vuetify/components';
+
+const userSchema = z.object({
+  username: z.string().min(3),
+  email: z.string().email(),
+  password: z.string().min(8),
+});
+
+type UserFormData = z.infer<typeof userSchema>;
+
+const formData = ref<UserFormData>({
+  username: '',
+  email: '',
+  password: '',
+});
+
+const errors = ref<Partial<Record<keyof UserFormData, string>>>({});
+const form = ref<VForm | null>(null);
+
+const validate = () => {
+  try {
+    userSchema.parse(formData.value);
+    errors.value = {};
+    return true;
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      errors.value = {};
+      err.errors.forEach(error => {
+        if (error.path[0]) {
+          errors.value[error.path[0] as keyof UserFormData] = error.message;
+        }
+      });
+    }
+    return false;
+  }
+};
+
+const handleSubmit = () => {
+  if (validate()) {
+    console.log('Form is valid!', formData.value);
+    // Submit to API
+  }
+};
+</script>
+```
+
+---
+
+# Forms with Zod & Vuetify
+
+Type-safe form validation
+
+**Define schema with Zod:**
+```typescript
+import { z } from "zod";
+
+const userSchema = z.object({
+  username: z.string()
+    .min(3, "Username must be at least 3 characters")
+    .max(20, "Username must be less than 20 characters"),
+  email: z.string()
+    .email("Invalid email address"),
+  password: z.string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(/[A-Z]/, "Password must contain uppercase letter")
+    .regex(/[0-9]/, "Password must contain a number"),
+  age: z.number()
+    .min(18, "Must be 18 or older")
+    .max(120, "Invalid age"),
+  terms: z.boolean()
+    .refine(val => val === true, "You must accept terms")
+});
+
+// Infer TypeScript type from Zod schema!
+type UserFormData = z.infer<typeof userSchema>;
+// { username: string; email: string; password: string; age: number; terms: boolean }
+```
+
+---
+layout: default
+---
+
+# Pinia + TypeScript
+
+Type-safe state management
+
+```typescript
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
+
+// Option 1: Composition API style (recommended)
+export const useUserStore = defineStore('user', () => {
+  // State
+  const user = ref<User | null>(null);
+  const isLoading = ref(false);
+  
+  // Getters (computed)
+  const isAuthenticated = computed(() => user.value !== null);
+  const fullName = computed(() => 
+    user.value ? `${user.value.firstName} ${user.value.lastName}` : ''
+  );
+  
+  // Actions
+  async function login(username: string, password: string): Promise<void> {
+    isLoading.value = true;
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        body: JSON.stringify({ username, password }),
+      });
+      user.value = await response.json();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+  
+  function logout(): void {
+    user.value = null;
+  }
+  
+  return { user, isLoading, isAuthenticated, fullName, login, logout };
+});
+
+// Usage in component - fully typed!
+const userStore = useUserStore();
+userStore.login('alice', 'pass123'); // ✅ TypeScript knows the signature
+console.log(userStore.fullName); // ✅ Typed as string
 ```
 
 ---
@@ -2258,7 +2261,7 @@ Explore all examples interactively
 
 
 ---
-layout: default
+layout: section
 ---
 
 # Key Takeaways

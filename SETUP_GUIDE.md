@@ -160,26 +160,20 @@ const newUser = await restClient.createUser({
 
 ## 📝 Preparing for Presentation
 
-1. **Setup Kahoot Quiz**
-   - Go to kahoot.com
-   - Create new quiz
-   - Copy questions from `kahoot-questions.md`
-   - Get game PIN ready
-
-2. **Test All Systems**
+1. **Test All Systems**
    ```bash
    npm run server:both    # Terminal 1
    npm run demo:dev       # Terminal 2
    npm run dev           # Terminal 3
    ```
 
-3. **Verify Type Generation**
+2. **Verify Type Generation**
    ```bash
    npm run generate:gql
    npm run generate:rest
    ```
 
-4. **Check All URLs**
+3. **Check All URLs**
    - ✓ Presentation: http://localhost:3030
    - ✓ Demo App: http://localhost:5555
    - ✓ GraphQL: http://localhost:4000/graphql
@@ -237,7 +231,6 @@ Once all systems are running, you have:
 - ✅ Type generation from live APIs
 - ✅ Interactive demo application
 - ✅ Comprehensive presentation slides
-- ✅ Kahoot quiz ready
 
 **Have a great presentation! 🚀**
 
