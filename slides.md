@@ -158,7 +158,9 @@ greet(person);
 
 Using TypeScript without bundlers
 
-**Direct `tsc` compilation**
+## Approach 1: Simple (No Config)
+
+**Direct file compilation - `tsc` ignores tsconfig.json!**
 
 <div class="grid grid-cols-2 gap-4">
 
@@ -167,42 +169,93 @@ Using TypeScript without bundlers
 **1. Install TypeScript:**
 ```bash
 npm install -g typescript
-
-# Or in project
-npm install --save-dev typescript
 ```
 
-**2. Initialize config:**
-```bash
-tsc --init
-```
-
-**3. File Structure:**
+**2. File Structure:**
 ```
 project/
   ├── index.html
   ├── app.ts        ← Write TypeScript here
-  ├── app.js        ← Generated JavaScript
-  └── tsconfig.json
+  └── app.js        ← Generated JavaScript
 ```
 
-**4. Compile:**
+**3. Compile:**
 ```bash
-# Single file
+# Single file (ignores tsconfig.json)
 tsc app.ts
 
 # Watch mode
 tsc app.ts --watch
-
-# All files
-tsc
 ```
 
 </div>
 
 <div>
 
-**tsconfig.json (basic):**
+**index.html:**
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TypeScript App</title>
+</head>
+<body>
+  <h1>Hello TypeScript!</h1>
+  <script src="app.js"></script>
+</body>
+</html>
+```
+
+**app.ts:**
+```typescript
+const message: string = "Hello!";
+console.log(message);
+```
+
+⚠️ **Note:** When you specify a file (`tsc app.ts`), TypeScript **ignores tsconfig.json** completely!
+
+</div>
+
+</div>
+
+## Approach 2: With Config (Organized)
+
+**Using tsconfig.json with src/ and dist/ folders**
+
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+**1. Initialize config:**
+```bash
+tsc --init
+```
+
+**2. File Structure:**
+```
+project/
+  ├── index.html
+  ├── tsconfig.json
+  ├── src/
+  │   └── app.ts    ← Write TypeScript here
+  └── dist/
+      └── app.js    ← Generated JavaScript
+```
+
+**3. Compile:**
+```bash
+# Compile all files (uses tsconfig.json)
+tsc
+
+# Watch mode (uses tsconfig.json)
+tsc --watch
+```
+
+</div>
+
+<div>
+
+**tsconfig.json:**
 ```json
 {
   "compilerOptions": {
@@ -213,8 +266,7 @@ tsc
     "strict": true,
     "esModuleInterop": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*"]
 }
 ```
 
@@ -227,16 +279,10 @@ tsc
 </head>
 <body>
   <h1>Hello TypeScript!</h1>
-  <!-- Load compiled JS -->
-  <script src="app.js"></script>
+  <!-- Load from dist folder -->
+  <script src="dist/app.js"></script>
 </body>
 </html>
-```
-
-**app.ts:**
-```typescript
-const message: string = "Hello!";
-console.log(message);
 ```
 
 </div>
@@ -340,10 +386,12 @@ npm install --save-dev webpack webpack-cli \
 **File Structure:**
 ```
 project/
+  ├── index.html        ← HTML entry
   ├── src/
   │   ├── index.ts      ← Entry point
   │   └── utils.ts
   ├── dist/             ← Build output
+  │   └── bundle.js
   ├── webpack.config.js
   ├── tsconfig.json
   └── package.json
