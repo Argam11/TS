@@ -106,6 +106,407 @@ function greet(person: { name: string }): string {
 </v-clicks>
 
 ---
+
+# TypeScript: The Transpiler
+
+How TypeScript transforms into JavaScript
+
+**TypeScript is a transpiler, not a traditional compiler**
+
+<v-clicks>
+
+## What `tsc` (TypeScript Compiler) Does:
+
+1. **Type Checking** - Analyzes code for type errors
+2. **Type Stripping** - Removes all type annotations
+3. **Code Generation** - Outputs JavaScript
+
+## Example Transformation:
+
+**Input (TypeScript):**
+```typescript
+interface User {
+  name: string;
+  age: number;
+}
+
+function greet(user: User): string {
+  return `Hello, ${user.name}!`;
+}
+
+const person: User = { name: "Alice", age: 30 };
+greet(person);
+```
+
+**Output (JavaScript):**
+```javascript
+function greet(user) {
+  return `Hello, ${user.name}!`;
+}
+
+const person = { name: "Alice", age: 30 };
+greet(person);
+```
+
+**Note:** Types exist only at compile time, not runtime!
+
+</v-clicks>
+
+---
+
+# TS Setup: Plain HTML/JS
+
+Using TypeScript without bundlers
+
+**Direct `tsc` compilation**
+
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+**1. Install TypeScript:**
+```bash
+npm install -g typescript
+
+# Or in project
+npm install --save-dev typescript
+```
+
+**2. Initialize config:**
+```bash
+tsc --init
+```
+
+**3. File Structure:**
+```
+project/
+  ├── index.html
+  ├── app.ts        ← Write TypeScript here
+  ├── app.js        ← Generated JavaScript
+  └── tsconfig.json
+```
+
+**4. Compile:**
+```bash
+# Single file
+tsc app.ts
+
+# Watch mode
+tsc app.ts --watch
+
+# All files
+tsc
+```
+
+</div>
+
+<div>
+
+**tsconfig.json (basic):**
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
+```
+
+**index.html:**
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TypeScript App</title>
+</head>
+<body>
+  <h1>Hello TypeScript!</h1>
+  <!-- Load compiled JS -->
+  <script src="app.js"></script>
+</body>
+</html>
+```
+
+**app.ts:**
+```typescript
+const message: string = "Hello!";
+console.log(message);
+```
+
+</div>
+
+</div>
+
+---
+
+# TS Setup: Bundlers
+
+Vite and Webpack with TypeScript
+
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+**Vite (Recommended)**
+
+```bash
+# Create project
+npm create vite@latest my-app -- --template vanilla-ts
+
+# Install dependencies
+cd my-app && npm install
+
+# Start dev server
+npm run dev
+```
+
+**File Structure:**
+```
+project/
+  ├── index.html
+  ├── src/
+  │   ├── main.ts       ← Entry point
+  │   ├── style.css
+  │   └── utils.ts
+  ├── vite.config.ts
+  ├── tsconfig.json
+  └── package.json
+```
+
+**vite.config.ts:**
+```typescript
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  // Vite has built-in TS support!
+  build: {
+    target: 'es2020'
+  }
+});
+```
+
+**tsconfig.json:**
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "skipLibCheck": true
+  }
+}
+```
+
+**index.html:**
+```html
+<!DOCTYPE html>
+<html>
+<body>
+  <div id="app"></div>
+  <!-- Vite auto-injects the script -->
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
+```
+
+**Mini app example:**
+```typescript
+// src/main.ts
+import { greet } from './utils';
+
+const name: string = 'World';
+const app = document.querySelector<HTMLDivElement>('#app')!;
+app.innerHTML = greet(name);
+```
+
+</div>
+
+<div>
+
+**Webpack**
+
+```bash
+npm install --save-dev webpack webpack-cli \
+  typescript ts-loader
+```
+
+**File Structure:**
+```
+project/
+  ├── src/
+  │   ├── index.ts      ← Entry point
+  │   └── utils.ts
+  ├── dist/             ← Build output
+  ├── webpack.config.js
+  ├── tsconfig.json
+  └── package.json
+```
+
+**webpack.config.js:**
+```javascript
+const path = require('path');
+
+module.exports = {
+  entry: './src/index.ts',
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/
+      }
+    ]
+  },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js']
+  },
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  }
+};
+```
+
+**tsconfig.json:**
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "strict": true,
+    "skipLibCheck": true
+  }
+}
+```
+
+**index.html:**
+```html
+<!DOCTYPE html>
+<html>
+<body>
+  <div id="app"></div>
+  <!-- Webpack bundles to dist/bundle.js -->
+  <script src="dist/bundle.js"></script>
+</body>
+</html>
+```
+
+**Mini app example:**
+```typescript
+// src/index.ts
+import { greet } from './utils';
+
+const name: string = 'World';
+document.body.innerHTML = greet(name);
+```
+
+</div>
+
+</div>
+
+---
+
+# TS Setup: Frameworks
+
+Vue 3 and React with TypeScript
+
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+**Vue 3 + TypeScript**
+
+```bash
+npm create vue@latest my-app
+# Select: TypeScript - Yes
+```
+
+**Component (MyComponent.vue):**
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+
+interface User {
+  name: string;
+  age: number;
+}
+
+const user = ref<User>({
+  name: 'Alice',
+  age: 30
+});
+
+function updateName(newName: string) {
+  user.value.name = newName;
+}
+</script>
+
+<template>
+  <div>
+    <h1>{{ user.name }}</h1>
+    <p>Age: {{ user.age }}</p>
+  </div>
+</template>
+```
+
+</div>
+
+<div>
+
+**React + TypeScript**
+
+```bash
+npm create vite@latest my-app -- --template react-ts
+```
+
+**Component (MyComponent.tsx):**
+```typescript
+import { useState } from 'react';
+
+interface User {
+  name: string;
+  age: number;
+}
+
+function MyComponent() {
+  const [user, setUser] = useState<User>({
+    name: 'Alice',
+    age: 30
+  });
+
+  const updateName = (newName: string) => {
+    setUser({ ...user, name: newName });
+  };
+
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <p>Age: {user.age}</p>
+    </div>
+  );
+}
+
+export default MyComponent;
+```
+
+</div>
+
+</div>
+
+**Framework Type Definitions:**
+- Vue: Built-in TypeScript support
+- React: `@types/react`, `@types/react-dom`
+- Angular: Built-in TypeScript (written in TS)
+
+---
 layout: section
 ---
 
@@ -1209,18 +1610,26 @@ new Greeter().sayHello("Alice");  // Logs: "Called: sayHello" → Returns: "Hell
 Modules, namespaces, and declaration merging
 
 ```typescript
-// Module augmentation
-import { Observable } from "rxjs";
-
-declare module "rxjs" {
-  interface Observable<T> {
-    customMethod(): Observable<T>;
-  }
+// Wildcard Module Declarations - Type non-TypeScript files
+declare module '*.png' {
+  const src: string;
+  export default src;
 }
 
-Observable.prototype.customMethod = function() {
-  return this;
-};
+declare module '*.module.css' {
+  const classes: { [key: string]: string };
+  export default classes;
+}
+
+declare module '*.json' {
+  const value: Record<string, unknown>;
+  export default value;
+}
+
+// Now you can import these file types
+import logo from './logo.png';           // logo: string
+import styles from './App.module.css';   // styles: { [key: string]: string }
+import config from './config.json';      // config: Record<string, unknown>
 
 // Declaration merging - Interfaces
 interface Box {
@@ -1255,24 +1664,9 @@ const dog = new Animals.Dog();
 
 # Advanced Features - Part 4
 
-Abstract classes, intersections, and assertions
+Intersections, Unions, and assertions
 
 ```typescript
-// Abstract classes
-abstract class Animal {
-  abstract makeSound(): void;
-  
-  move(): void {
-    console.log("Moving...");
-  }
-}
-
-class Dog extends Animal {
-  makeSound(): void {
-    console.log("Woof!");
-  }
-}
-
 // Intersection types (&)
 type Person = {
   name: string;
@@ -1299,6 +1693,8 @@ type ID = string | number;
 
 // Type assertions
 const input = document.getElementById("input") as HTMLInputElement;
+
+// Angle bracket syntax (old, conflicts with JSX/TSX - avoid in modern code)
 const input2 = <HTMLInputElement>document.getElementById("input");
 
 // Non-null assertion operator (!)
@@ -1597,55 +1993,14 @@ Additional checks and best practices
 - Set `moduleResolution: "bundler"` for modern bundlers (Vite, webpack)
 
 ---
-layout: two-cols
----
 
 # GraphQL Type Generation
-layout: two-cols
 
 Automatic types from GraphQL schema
 
-::left::
+<div class="grid grid-cols-2 gap-4">
 
-**Setup:**
-```bash
-npm install -D @graphql-codegen/cli \
-  @graphql-codegen/typescript \
-  @graphql-codegen/typescript-operations
-```
-
-**codegen.yml:**
-```yaml
-schema: "./schema.graphql"
-documents: "./src/**/*.graphql"
-generates:
-  ./src/generated/graphql.ts:
-    plugins:
-      - "typescript"
-      - "typescript-operations"
-    config:
-      skipTypename: false
-      enumsAsTypes: true
-```
-
-**Schema (schema.graphql):**
-```graphql
-type User {
-  id: ID!
-  username: String!
-  email: String!
-  posts: [Post!]!
-}
-
-type Post {
-  id: ID!
-  title: String!
-  content: String!
-  author: User!
-}
-```
-
-::right::
+<div>
 
 **Query (queries.graphql):**
 ```graphql
@@ -1662,6 +2017,15 @@ query GetUser($id: ID!) {
 }
 ```
 
+**Benefits:**
+- ✅ 100% type-safe queries
+- ✅ Autocomplete in IDE
+- ✅ Refactoring support
+
+</div>
+
+<div>
+
 **Generated Types:**
 ```typescript
 export type User = {
@@ -1672,27 +2036,19 @@ export type User = {
   posts: Array<Post>;
 };
 
-export type GetUserQueryVariables = Exact<{
-  id: Scalars['ID'];
-}>;
-
 export type GetUserQuery = {
   user?: {
     id: string;
     username: string;
     email: string;
-    posts: Array<{
-      id: string;
-      title: string;
-    }>;
+    posts: Array<{ id: string; title: string }>;
   };
 };
 ```
 
-**Benefits:**
-✅ 100% type-safe queries
-✅ Autocomplete in IDE
-✅ Refactoring support
+</div>
+
+</div>
 
 ---
 
