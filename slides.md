@@ -1955,8 +1955,7 @@ Understanding every compiler option
   "compilerOptions": {
     /* Language and Environment */
     "target": "ES2022",                    // ECMAScript target: ES3, ES5, ES2015-ES2023, ESNext
-    "lib": ["ES2022", "DOM"],              // Built-in APIs available
-    "jsx": "preserve",                     // JSX: preserve, react, react-jsx, react-native
+    "lib": ["ES2022", "DOM"],              // Built-in APIs available (if not specified, uses "target" for ES version)
     "experimentalDecorators": true,        // Enable decorators
     "emitDecoratorMetadata": true,         // Emit metadata for decorators
     "useDefineForClassFields": true,       // Use Define semantics for class fields
@@ -1969,6 +1968,7 @@ Understanding every compiler option
       "@/*": ["./src/*"]
     },
     "resolveJsonModule": true,             // Allow importing .json files
+    "allowSyntheticDefaultImports": true,  // Allow default imports from modules without default export
     "allowImportingTsExtensions": true,    // Import .ts files (with bundlers)
     "types": ["node", "vite/client"],      // Type declaration packages to include
 ```
@@ -1986,13 +1986,12 @@ Emit and type checking options
     "sourceMap": true,                     // Generate .map files
     "outDir": "./dist",                    // Output directory
     "removeComments": false,               // Keep comments in output
-    "noEmit": true,                        // Don't emit (for type-checking only)
+    "noEmit": true,                        // Don't emit files (for type-checking only)
     "importHelpers": true,                 // Use tslib helpers
     "downlevelIteration": true,            // Full support for iterables
 
     /* Interop */
     "isolatedModules": true,               // Each file must be transpilable alone
-    "allowSyntheticDefaultImports": true,  // Allow default imports from modules
     "esModuleInterop": true,               // Better CommonJS/ESM interop
     "forceConsistentCasingInFileNames": true, // Case-sensitive imports
 
@@ -2696,18 +2695,13 @@ Perfect integration with modern Vue
 ## Official Documentation
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 - [Vue 3 + TypeScript Guide](https://vuejs.org/guide/typescript/overview.html)
-- [Pinia with TypeScript](https://pinia.vuejs.org/core-concepts/type-safety.html)
+- [Pinia with TypeScript](https://pinia.vuejs.org/)
 
 ## Tools & Libraries
-- [Zod](https://zod.dev/) - Schema validation
+- [Zod - Schema validation](https://zod.dev/)
 - [GraphQL Code Generator](https://the-guild.dev/graphql/codegen)
 - [openapi-typescript](https://github.com/drwpow/openapi-typescript)
 - [Vuetify](https://vuetifyjs.com/)
-
-## This Presentation
-- GitHub Repository: [Link to your repo]
-- Demo App: [Link to demo]
-- Slides (Markdown): Available in repo
 
 ## Keep Learning
 - [TypeScript Playground](https://www.typescriptlang.org/play)
@@ -2719,16 +2713,73 @@ layout: end
 class: text-center
 ---
 
-# Thank You! 🎉
+# Thank You! <span class="confetti-emoji">🎉</span>
 
 ## Questions?
+
+<script setup>
+import { ref, watch, onMounted } from 'vue';
+import { useNav } from '@slidev/client';
+import JSConfetti from 'js-confetti';
+
+const nav = useNav();
+const hasTriggered = ref(false);
+
+watch(
+  () => nav.currentPage.value,
+  (currentPage) => {
+    if (currentPage === nav.total.value && !hasTriggered.value) {
+      const jsConfetti = new JSConfetti();
+      jsConfetti.addConfetti();
+      hasTriggered.value = true;
+    }
+  },
+  { immediate: true }
+);
+
+onMounted(() => {
+  const emojiSpan = document.querySelector(".confetti-emoji");
+  const jsConfetti = new JSConfetti();
+
+  if(emojiSpan) {
+    emojiSpan.style.cursor = "pointer";
+    emojiSpan.addEventListener('click', () => {
+      jsConfetti.addConfetti();
+    });
+  }
+});
+</script>
+
+<style>
+@keyframes bounce-gentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.contact-link {
+  display: inline-block;
+  text-decoration: none;
+  animation: bounce-gentle 2s infinite;
+  animation-timing-function: linear;
+  animation-direction: alternate;
+
+  &.a {
+    animation-direction: alternate-reverse;
+  }
+}
+
+.contact-link:hover {
+  transform: scale(1.2);
+  color: #42b883;
+}
+</style>
 
 <div class="mt-12">
   <div class="text-2xl mb-4">Let's connect!</div>
   <div class="flex justify-center gap-8">
-    <div>📧 your-email@example.com</div>
-    <div>🐙 github.com/yourusername</div>
-    <div>🐦 @yourtwitter</div>
+    <a href="mailto:argam.markosyan1994@gmail.com" target="_blank" class="contact-link a">📧 Gmail</a>
+    <a href="https://github.com/argam11" target="_blank" class="contact-link">🐙 Github</a>
+    <a href="https://linkedin.com/in/argam-markosyan" target="_blank" class="contact-link a">💼 LinkedIn</a>
   </div>
 </div>
 
