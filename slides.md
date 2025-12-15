@@ -1981,29 +1981,29 @@ Emit and type checking options
 
 ```json
     /* Emit */
-    "declaration": true,                   // Generate .d.ts files
-    "declarationMap": true,                // Sourcemap for .d.ts files
-    "sourceMap": true,                     // Generate .map files
-    "outDir": "./dist",                    // Output directory
-    "removeComments": false,               // Keep comments in output
-    "noEmit": true,                        // Don't generate any output files (for type-checking only)
-    "importHelpers": true,                 // Use tslib helpers
+    "declaration": true,                      // Generate .d.ts files
+    "declarationMap": true,                   // Sourcemap for .d.ts files
+    "sourceMap": true,                        // Generate .map files
+    "outDir": "./dist",                       // Output directory
+    "removeComments": false,                  // Keep comments in output
+    "noEmit": true,                           // Don't generate any output files (for type-checking only)
+    "importHelpers": true,                    // Use tslib helpers
 
     /* Interop */
-    "isolatedModules": true,               // Each file must be transpilable alone
-    "esModuleInterop": true,               // Better CommonJS/ESM interop
-    "forceConsistentCasingInFileNames": true, // Case-sensitive imports
+    "isolatedModules": true,                  // Each file must be transpilable alone
+    "esModuleInterop": true,                  // Better CommonJS/ESM interop
+    "forceConsistentCasingInFileNames": true, // Ensure correct casing (Mac/Win: case-insensitive, Linux: case-sensitive)
 
     /* Strict Type Checking */
-    "strict": true,                        // Enable ALL strict checks (recommended!)
-    "noImplicitAny": true,                 // Error on implied 'any'
-    "strictNullChecks": true,              // null/undefined handled properly
-    "strictFunctionTypes": true,           // Strict function type checking
-    "strictBindCallApply": true,           // Strict bind/call/apply
-    "strictPropertyInitialization": true,  // Class properties must be initialized
-    "noImplicitThis": true,                // Error when 'this' has type 'any'
-    "alwaysStrict": true,                  // Parse in strict mode
-    "useUnknownInCatchVariables": true,    // catch (e) - e is unknown
+    "strict": true,                           // Enable ALL strict checks (recommended!)
+    "noImplicitAny": true,                    // Error on implied 'any'
+    "strictNullChecks": true,                 // null/undefined handled properly
+    "strictFunctionTypes": true,              // Strict function type checking
+    "strictBindCallApply": true,              // Strict bind/call/apply
+    "strictPropertyInitialization": true,     // Class properties must be initialized
+    "noImplicitThis": true,                   // Error when 'this' has type 'any'
+    "alwaysStrict": true,                     // Parse in strict mode
+    "useUnknownInCatchVariables": true,       // catch (e) - e is unknown
 ```
 
 ---
