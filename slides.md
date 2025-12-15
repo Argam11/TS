@@ -1986,9 +1986,8 @@ Emit and type checking options
     "sourceMap": true,                     // Generate .map files
     "outDir": "./dist",                    // Output directory
     "removeComments": false,               // Keep comments in output
-    "noEmit": true,                        // Don't emit files (for type-checking only)
+    "noEmit": true,                        // Don't generate any output files (for type-checking only)
     "importHelpers": true,                 // Use tslib helpers
-    "downlevelIteration": true,            // Full support for iterables
 
     /* Interop */
     "isolatedModules": true,               // Each file must be transpilable alone
