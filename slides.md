@@ -1997,12 +1997,12 @@ Emit and type checking options
     /* Strict Type Checking */
     "strict": true,                           // Enable ALL strict checks (recommended!)
     "noImplicitAny": true,                    // Error on implied 'any'
-    "strictNullChecks": true,                 // null/undefined handled properly
-    "strictFunctionTypes": true,              // Strict function type checking
+    "strictNullChecks": true,                 // null & undefined are separate types (can't mix with string, number, etc.)
+    "strictFunctionTypes": true,              // Contravariant parameter checking for functions
     "strictBindCallApply": true,              // Strict bind/call/apply
     "strictPropertyInitialization": true,     // Class properties must be initialized
     "noImplicitThis": true,                   // Error when 'this' has type 'any'
-    "alwaysStrict": true,                     // Parse in strict mode
+    "alwaysStrict": true,                     // Emit "use strict" in JS output & parse in ECMAScript strict mode
     "useUnknownInCatchVariables": true,       // catch (e) - e is unknown
 ```
 
@@ -2727,6 +2727,10 @@ const hasTriggered = ref(false);
 watch(
   () => nav.currentPage.value,
   (currentPage) => {
+  console.log("aaa", currentPage)
+  console.log("bbb", nav.total.value)
+  console.log("ccc", hasTriggered.value)
+
     if (currentPage === nav.total.value && !hasTriggered.value) {
       const jsConfetti = new JSConfetti();
       jsConfetti.addConfetti();
