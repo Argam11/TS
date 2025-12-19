@@ -2717,24 +2717,24 @@ class: text-center
 ## Questions?
 
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { watch, onMounted } from 'vue';
 import { useNav } from '@slidev/client';
 import JSConfetti from 'js-confetti';
 
 const nav = useNav();
-const hasTriggered = ref(false);
+
+// Use plain JS variable outside Vue reactivity - persists across remounts
+if (typeof window !== 'undefined' && !window.__confettiTriggered) {
+  window.__confettiTriggered = false;
+}
 
 watch(
   () => nav.currentPage.value,
   (currentPage) => {
-  console.log("aaa", currentPage)
-  console.log("bbb", nav.total.value)
-  console.log("ccc", hasTriggered.value)
-
-    if (currentPage === nav.total.value && !hasTriggered.value) {
+    if (currentPage === nav.total.value && !window.__confettiTriggered) {
       const jsConfetti = new JSConfetti();
       jsConfetti.addConfetti();
-      hasTriggered.value = true;
+      window.__confettiTriggered = true;
     }
   },
   { immediate: true }
