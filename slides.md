@@ -734,7 +734,7 @@ type Bear = Animal & { honey: boolean }; // Intersection
 interface Vehicle { wheels: number; }
 interface Car extends Vehicle { doors: number; } // Extension
 
-// Index signatures - Dynamic keys
+// Index signatures - Dynamic keys (string, number, or symbol)
 interface StringMap {
   [key: string]: string;
 }
@@ -743,6 +743,15 @@ interface NumberDictionary {
   [index: string]: number;
   length: number; // OK
   name: string;   // Error! Must be number
+}
+
+// Index signatures with number and symbol
+interface ArrayLike {
+  [index: number]: string;  // Numeric index
+}
+
+interface SymbolKeyed {
+  [key: symbol]: boolean;   // Symbol index
 }
 
 // Interface merging - Interfaces with the same name merge automatically
@@ -1011,6 +1020,11 @@ abstract class Animal {
 class Dog extends Animal {
   makeSound(): string {
     return "Woof!";
+  }
+  
+  // override modifier - explicit method override (requires noImplicitOverride in tsconfig.json)
+  override move(): void {
+    console.log(`${this.name} is running`);
   }
 }
 
@@ -2014,18 +2028,18 @@ Additional checks and best practices
 
 ```json
     /* Additional Checks */
-    "noUnusedLocals": true,                // Report unused local variables
-    "noUnusedParameters": true,            // Report unused parameters
-    "noImplicitReturns": true,             // All code paths must return value
-    "noFallthroughCasesInSwitch": true,    // No fallthrough in switch
-    "noUncheckedIndexedAccess": true,      // Add undefined to index access
-    "noImplicitOverride": true,            // Must use 'override' keyword
+    "noUnusedLocals": true,                     // Report unused local variables (inside functions/blocks only)
+    "noUnusedParameters": true,                 // Report unused parameters
+    "noImplicitReturns": true,                  // All code paths must return value
+    "noFallthroughCasesInSwitch": true,         // No fallthrough in switch
+    "noUncheckedIndexedAccess": true,           // Add undefined to index access (works with strict mode)
+    "noImplicitOverride": true,                 // Must use 'override' keyword
     "noPropertyAccessFromIndexSignature": true, // Use bracket notation for index signatures
-    "allowUnusedLabels": false,            // Report unused labels
-    "allowUnreachableCode": false,         // Report unreachable code
+    "allowUnusedLabels": false,                 // Report unused labels
+    "allowUnreachableCode": false,              // Report unreachable code
 
     /* Completeness */
-    "skipLibCheck": true                   // Skip checking .d.ts files (performance)
+    "skipLibCheck": true                        // Skip type checking in node_modules and .d.ts files (performance)
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
