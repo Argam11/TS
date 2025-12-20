@@ -34,7 +34,6 @@ layout: intro
 
 - 📚 **TypeScript History** - From inception to modern day
 - 🔥 **Complete Type System** - Every TypeScript feature
-- 🎮 **Interactive Game** - Test your knowledge
 - 🛠️ **Real-World Applications** - API generation, forms, CI/CD
 - 🎨 **Vue 3 Integration** - Type-safe components
 - 💻 **Live Coding** - Build something together
@@ -107,6 +106,66 @@ function greet(person: { name: string }): string {
 
 ---
 
+# Static vs Dynamic Typing
+
+<v-clicks>
+
+## What is a Statically-Typed Language?
+
+A **statically-typed** language checks types **at compile time** (before running the code).
+
+### Key Characteristics:
+- ✅ **Type checking happens before execution**
+- ✅ **Types are known at compile time**
+- ✅ **Catches errors early in development**
+- ✅ **Better IDE support** (autocomplete, refactoring)
+- ✅ **Documentation built into code**
+
+<br>
+
+### Examples:
+- **TypeScript**, **Java**, **C++**, **C#**, **Rust**, **Go**
+
+</v-clicks>
+
+---
+
+# Static vs Dynamic Typing
+
+<v-clicks>
+
+## What is a Dynamically-Typed Language?
+
+A **dynamically-typed** language checks types **at runtime** (while the code is executing).
+
+### Key Characteristics:
+- ⚠️ **Type checking happens during execution**
+- ⚠️ **Types can change at runtime**
+- ⚠️ **Errors discovered while running**
+- ⚠️ **More flexible but less safe**
+
+### Examples:
+- **JavaScript**, **Python**, **Ruby**, **PHP**
+
+## The Trade-off
+
+```typescript
+// Static (TypeScript) - Error caught immediately in IDE
+let count: number = 5;
+count = "hello"; // ❌ Type 'string' is not assignable to type 'number'
+```
+
+```javascript
+// Dynamic (JavaScript) - Error only at runtime (maybe never!)
+let count = 5;
+count = "hello"; // ✅ No error until you try to use it as a number
+console.log(count + 10); // "hello10" - Surprise! 🐛
+```
+
+</v-clicks>
+
+---
+
 # TypeScript: The Transpiler
 
 How TypeScript transforms into JavaScript
@@ -120,6 +179,8 @@ How TypeScript transforms into JavaScript
 1. **Type Checking** - Analyzes code for type errors
 2. **Type Stripping** - Removes all type annotations
 3. **Code Generation** - Outputs JavaScript
+
+<br>
 
 ## Example Transformation:
 
@@ -149,6 +210,51 @@ greet(person);
 ```
 
 **Note:** Types exist only at compile time, not runtime!
+
+</v-clicks>
+
+---
+
+# TypeScript's Structural Type System
+
+<v-clicks>
+
+### Structural Typing (Not Nominal Typing)
+
+TypeScript checks types **by structure**, not by name!
+
+### What This Means:
+- ✅ **Checks the shape/structure** of the data (properties & types)
+- ✅ **Ignores interface/type names**
+- ✅ **"Duck typing"** - If it looks like a duck and quacks like a duck...
+- ❌ **NOT** like Java/C# where names must match exactly
+
+## Example:
+
+```typescript
+interface Person {
+  name: string;
+  age: number;
+}
+
+function greet(person: Person): void {
+  console.log(`Hello, ${person.name}!`);
+}
+
+// ✅ Works! Has the right structure (name: string, age: number)
+const user = { name: "Alice", age: 30 };
+greet(user);
+
+// ✅ Also works! Even though it's not named "Person"
+const employee = { name: "Bob", age: 25, role: "Developer" };
+greet(employee); // Extra properties are OK!
+
+// ❌ Error! Missing required property
+const incomplete = { name: "Charlie" };
+greet(incomplete); // Error: Property 'age' is missing
+```
+
+**TypeScript only cares that the object has AT LEAST the required properties with correct types!**
 
 </v-clicks>
 
