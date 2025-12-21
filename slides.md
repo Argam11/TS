@@ -93,7 +93,7 @@ function greet(person: { name: string }): string {
 - **July 2018**: TypeScript 3.0 - Project references, tuples
 - **August 2020**: TypeScript 4.0 - Variadic tuples, labeled tuples
 - **November 2023**: TypeScript 5.0 - Decorators, const type parameters
-- **Today**: TypeScript 5.3+ - Continuous improvements
+- **Today**: TypeScript 5.9+ - Latest stable release
 
 ## Adoption Growth
 
@@ -180,7 +180,6 @@ How TypeScript transforms into JavaScript
 2. **Type Stripping** - Removes all type annotations
 3. **Code Generation** - Outputs JavaScript
 
-<br>
 
 ## Example Transformation:
 
@@ -210,6 +209,72 @@ greet(person);
 ```
 
 **Note:** Types exist only at compile time, not runtime!
+
+</v-clicks>
+
+---
+
+# TypeScript Compiler (tsc) - Under the Hood
+
+How the TypeScript compiler works internally
+
+<v-clicks>
+
+## Compilation Pipeline:
+
+```mermaid
+graph LR
+    Source[Source Code .ts] --> Scanner[Scanner/Lexer]
+    Scanner --> Parser[Parser]
+    Parser --> AST[Abstract Syntax Tree]
+    AST --> Binder[Binder]
+    Binder --> Checker[Type Checker]
+    Checker --> Emitter[Emitter]
+    Emitter --> Output[JavaScript .js]
+    Checker --> Diagnostics[Type Errors]
+```
+
+## The Process:
+
+1. **Scanner (Lexer)** - Breaks source code into tokens
+   - Converts `function greet(name: string)` → `[function, greet, (, name, :, string, )]`
+
+2. **Parser** - Builds Abstract Syntax Tree (AST)
+   - Creates tree structure representing code syntax
+
+3. **Binder** - Connects declarations and usage
+   - Links variable references to their declarations
+
+4. **Type Checker** - Analyzes types and validates code
+   - Most complex part - performs type inference and validation
+   - Detects type errors and reports diagnostics
+
+5. **Emitter** - Generates JavaScript output
+   - Strips types and emits `.js` and `.d.ts` files
+   - Applies downleveling (ES6 → ES5, etc.)
+
+## Type Checking Only: `tsc --noEmit`
+
+**Skip code generation, only check types:**
+
+```bash
+tsc --noEmit
+```
+
+- ✅ **Runs Scanner, Parser, Binder, and Type Checker**
+- ❌ **Skips Emitter** - No `.js` files generated
+- ⚡ **Faster** - No file I/O for output
+- 🎯 **Use Cases:**
+  - **CI/CD pipelines** - Validate types before deployment
+  - **Pre-commit hooks** - Catch type errors before commit
+  - **With bundlers** - Let Vite/Webpack handle compilation
+  - **Quick validation** - Check types during development
+
+```bash
+# Common usage
+npm run type-check    # package.json: "tsc --noEmit"
+tsc --noEmit --watch  # Watch mode for continuous checking
+```
 
 </v-clicks>
 
@@ -797,6 +862,48 @@ const enum Color {
 
 ---
 
+# Built-in Collections: Set, Map & WeakMap
+
+Working with JavaScript's built-in collection types
+
+```typescript
+// Set - Unique values collection
+let numbers: Set<number> = new Set([1, 2, 3, 3, 3]); // Set(3) {1, 2, 3}
+numbers.add(4);
+numbers.has(2);    // true
+numbers.delete(1);
+numbers.size;      // 3
+
+// Using new Set<Type>() constructor format
+let uniqueNames = new Set<string>();
+uniqueNames.add("Alice").add("Bob").add("Alice"); // Only one "Alice"
+
+// WeakSet - Like Set but only holds objects weakly
+let weakSet = new WeakSet<object>();
+let person = { name: "Alice" };
+weakSet.add(person);
+weakSet.has(person);   // true
+// When person is no longer referenced, it can be garbage collected
+
+// Map - Key-value pairs with any type as key
+let userMap = new Map<number, string>();
+userMap.set(1, "Alice");
+userMap.set(2, "Bob");
+userMap.get(1);        // "Alice"
+userMap.has(2);        // true
+userMap.delete(1);
+userMap.size;          // 1
+
+// WeakMap - Like Map but keys must be objects, and are weakly held (garbage collected)
+let weakMap = new WeakMap<object, string>();
+let obj = { name: "test" };
+weakMap.set(obj, "some value");
+weakMap.get(obj);      // "some value"
+// When obj is no longer referenced, it can be garbage collected
+```
+
+---
+
 # Object Types & Interfaces
 
 Describing object shapes
@@ -1103,6 +1210,30 @@ class Product {
 const product = new Product(1, "Laptop", 999);
 console.log(product.id); // ✅ 1
 // console.log(product.price); // ❌ Error: private
+
+// Constructor overloading
+class Point {
+  x: number;
+  y: number;
+
+  // Overload signatures
+  constructor(x: number, y: number);
+  constructor(xy: { x: number; y: number });
+  
+  // Implementation signature (must handle all overloads)
+  constructor(xOrXY: number | { x: number; y: number }, y?: number) {
+    if (typeof xOrXY === "number") {
+      this.x = xOrXY;
+      this.y = y!;
+    } else {
+      this.x = xOrXY.x;
+      this.y = xOrXY.y;
+    }
+  }
+}
+
+const p1 = new Point(10, 20);          // ✅ Using overload 1
+const p2 = new Point({ x: 10, y: 20 }); // ✅ Using overload 2
 ```
 
 ---
@@ -1424,6 +1555,74 @@ type MutablePerson = Mutable<ReadonlyPerson>; // { name: string; age: number }
 
 ---
 
+# keyof & typeof Operators
+
+Extracting keys and types from objects
+
+```typescript
+// typeof - Get the type of a value
+const user = {
+  name: "Alice",
+  age: 30,
+  email: "alice@example.com"
+};
+
+type User = typeof user;
+// { name: string; age: number; email: string; }
+
+// keyof - Get union of all keys
+type UserKeys = keyof User;
+// "name" | "age" | "email"
+
+// Combining: keyof typeof - Get keys from a value
+const colors = {
+  red: "#ff0000",
+  green: "#00ff00",
+  blue: "#0000ff"
+};
+
+type ColorKeys = keyof typeof colors;
+// "red" | "green" | "blue"
+
+// Practical example: Type-safe object key access
+function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
+  return obj[key];
+}
+
+const name = getProperty(user, "name");   // string
+const age = getProperty(user, "age");     // number
+// getProperty(user, "invalid");          // Error!
+
+// Using with enums and const objects
+const STATUS = {
+  PENDING: 0,
+  APPROVED: 1,
+  REJECTED: 2
+} as const;
+
+type StatusKey = keyof typeof STATUS;        // "PENDING" | "APPROVED" | "REJECTED"
+type StatusValue = typeof STATUS[StatusKey]; // 0 | 1 | 2
+
+// Common pattern: Extract keys from configuration
+const config = {
+  apiUrl: "https://api.example.com",
+  timeout: 5000,
+  retries: 3
+} as const;
+
+type ConfigKey = keyof typeof config;
+// "apiUrl" | "timeout" | "retries"
+
+function getConfig(key: ConfigKey) {
+  return config[key];
+}
+
+getConfig("apiUrl");     // ✅ OK
+// getConfig("invalid"); // ❌ Error!
+```
+
+---
+
 # Conditional Types
 
 Types that depend on conditions
@@ -1553,6 +1752,18 @@ function isString(value: unknown): value is string {
 function example(x: unknown) {
   if (isString(x)) {
     x.toUpperCase(); // TypeScript knows x is string
+  }
+}
+
+// Equality narrowing - TypeScript narrows types based on === checks
+function compare(x: string | number, y: string | boolean) {
+  if (x === y) {
+    // TypeScript knows both must be string (the only common type)
+    x.toUpperCase();  // ✅ x is string
+    y.toLowerCase();  // ✅ y is string
+  } else {
+    console.log(x);   // string | number
+    console.log(y);   // string | boolean
   }
 }
 
@@ -2054,6 +2265,65 @@ if (route.meta.requiresAuth) { // ✅ TypeScript knows this property!
 - Community repository of type definitions
 - 9000+ packages with type definitions
 - `npm install @types/package-name`
+
+---
+
+# TypeScript Directive Comments
+
+Suppressing and controlling type checking with comments
+
+```typescript
+// @ts-ignore - Suppress error on the NEXT LINE ONLY
+// ⚠️ Use sparingly! Hides all errors on next line
+const result = someUndefinedFunction();  // No error reported
+// @ts-ignore
+const value: string = 123;  // TypeScript ignores this error
+
+// @ts-expect-error - Suppress error BUT warn if no error exists
+// ✅ Preferred over @ts-ignore - catches outdated suppressions
+// @ts-expect-error
+const num: number = "text";  // OK - Error expected and found
+
+// @ts-expect-error
+const valid: number = 123;  // ⚠️ Warning! No error exists here
+
+// @ts-nocheck - Disable type checking for ENTIRE FILE
+// Add at the top of file
+// @ts-nocheck
+// All TypeScript errors in this file are ignored
+let x: string = 123;  // No error
+let y: number = "text";  // No error
+
+// @ts-check - Enable type checking in JavaScript files
+// Add to .js files to get TypeScript checking
+// @ts-check
+let name: string = "Alice";  // Error in .js file! JS doesn't support type annotations
+
+// Use JSDoc instead:
+// @ts-check
+/** @type {string} */
+let username = "Bob";
+username = 123;  // ❌ Error! Type checking works
+
+// Common use cases:
+// 1. Third-party library without types
+// @ts-ignore
+import { legacyFunction } from "old-library";
+
+// 2. Temporary workaround (add TODO)
+// TODO: Fix type definitions
+// @ts-expect-error - Type definition is incorrect
+const data = apiCall();
+
+// 3. Test files expecting errors
+// @ts-expect-error - Testing invalid input
+expect(() => validateEmail(123)).toThrow();
+
+// 4. Gradual migration (JavaScript → TypeScript)
+// @ts-nocheck in old .js files during migration
+```
+
+**Best Practice:** Use `@ts-expect-error` over `@ts-ignore` - it warns if the error is fixed!
 
 ---
 layout: center
