@@ -1574,6 +1574,10 @@ type User = typeof user;
 type UserKeys = keyof User;
 // "name" | "age" | "email"
 
+// Extract VALUES from interface/type as union type
+type UserValues = User[keyof User];
+// string | number
+
 // Combining: keyof typeof - Get keys from a value
 const colors = {
   red: "#ff0000",
