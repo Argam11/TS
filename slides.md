@@ -726,6 +726,154 @@ export default MyComponent;
 - Angular: Built-in TypeScript (written in TS)
 
 ---
+
+# TypeScript Compiler (tsc) Commands
+
+Essential tsc CLI commands
+
+```bash
+# Initialize tsconfig.json
+tsc --init
+
+# Compile all files in project
+tsc
+
+# Compile specific file
+tsc app.ts
+
+# Compile specific project (tsconfig.json path)
+tsc --project tsconfig.build.json
+# or
+tsc -p tsconfig.build.json
+
+# Watch mode - recompile on file changes
+tsc --watch
+# or
+tsc -w
+
+# Type-check without emitting files
+tsc --noEmit
+
+# Build project references
+tsc --build
+# or
+tsc -b
+
+# Clean output of project references
+tsc --build --clean
+
+# Force rebuild all projects
+tsc --build --force
+# or
+tsc -b -f
+
+# Show what would be built
+tsc --build --dry
+
+# Verbose output (show detailed build information)
+tsc --build --verbose
+
+# Pretty error messages (enabled by default)
+tsc --pretty
+
+# Show all compiler options
+tsc --all
+
+# Show TypeScript version
+tsc --version
+# or
+tsc -v
+```
+
+**Most Common:**
+- `tsc --watch` - Development
+- `tsc --noEmit` - Type-checking only (with bundlers)
+- `tsc --build` - Monorepo/project references
+
+---
+
+# Multiple tsconfig Files
+
+Organizing TypeScript configurations
+
+**Common Pattern in Modern Projects:**
+
+```
+project/
+├── tsconfig.json           # Base/root config (extends other configs)
+├── tsconfig.app.json       # Application code config
+├── tsconfig.node.json      # Node/build tools config
+└── tsconfig.base.json      # Shared base config (optional)
+```
+
+**Naming Convention:** Use `tsconfig.[name].json` where `[name]` can be anything: `app`, `node`, `server`, `test`, etc.
+
+**Why Multiple Configs?**
+
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+**tsconfig.app.json**
+```json
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM"],
+    "moduleResolution": "bundler"
+  },
+  "include": ["src/**/*"]
+}
+```
+
+- For **application/frontend** code
+- Includes DOM types
+- Modern target (browsers)
+- Used by Vite/bundler
+
+</div>
+
+<div>
+
+**tsconfig.node.json**
+```json
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["node"]
+  },
+  "include": ["vite.config.ts"]
+}
+```
+
+- For **build tools/Node scripts**
+- No DOM types
+- Node.js environment
+- Config files (vite.config, etc.)
+
+</div>
+
+</div>
+
+**tsconfig.json (Root):**
+```json
+{
+  "files": [],  // Empty - just for IDE/references
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
+```
+
+**Benefits:** Different environments, faster builds, better type safety
+
+---
 layout: section
 ---
 
@@ -2347,6 +2495,7 @@ Understanding every compiler option
 
 ```json
 {
+  "extends": "./tsconfig.base.json",       // Inherit config from another file
   "compilerOptions": {
     /* Language and Environment */
     "target": "ES2022",                    // ECMAScript target: ES3, ES5, ES2015-ES2023, ESNext
@@ -2380,9 +2529,11 @@ Emit and type checking options
     "declarationMap": true,                   // Sourcemap for .d.ts files
     "sourceMap": true,                        // Generate .map files
     "outDir": "./dist",                       // Output directory
+    "rootDir": "./src",                       // Root directory of source files (preserves folder structure in outDir)
     "removeComments": false,                  // Keep comments in output
     "noEmit": true,                           // Don't generate any output files (for type-checking only)
     "importHelpers": true,                    // Use tslib helpers
+    "composite": true,                        // Enable project references (generates .d.ts & .tsbuildinfo, works with "references")
 
     /* Interop */
     "isolatedModules": true,                  // Each file must be transpilable alone
@@ -2422,8 +2573,10 @@ Additional checks and best practices
     /* Completeness */
     "skipLibCheck": true                        // Skip type checking in node_modules and .d.ts files (performance)
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "files": ["src/main.ts"],                     // Specific files (no globs)
+  "include": ["src/**/*"],                      // Glob patterns: **/* = all files in all subdirectories
+  "exclude": ["node_modules", "dist"],
+  "references": [{ "path": "./tsconfig.node.json" }]  // Project references (requires "composite": true)
 }
 ```
 
