@@ -1,13 +1,6 @@
-# TypeScript Kahoot Quiz Questions
+# TypeScript Quiz Questions
 
-## Instructions
-- 15-20 questions covering all TypeScript concepts
-- Mix of difficulty: Quick (30s), Medium (60s), Advanced (90s)
-- Use on Kahoot.com during presentation
-
----
-
-## Question 1: TypeScript History [Quick - 30s]
+## Question 1: TypeScript History
 **When was TypeScript first released?**
 - A) 2012 ✅
 - B) 2010
@@ -16,7 +9,7 @@
 
 ---
 
-## Question 2: Basic Types [Quick - 30s]
+## Question 2: Basic Types
 **Which type represents "a value that will never occur"?**
 - A) void
 - B) never ✅
@@ -25,7 +18,7 @@
 
 ---
 
-## Question 3: Type Inference [Medium - 60s]
+## Question 3: Type Inference
 **What type does TypeScript infer for: `const arr = [1, "hello", true]`?**
 - A) any[]
 - B) (number | string | boolean)[] ✅
@@ -34,7 +27,7 @@
 
 ---
 
-## Question 4: Generics [Medium - 60s]
+## Question 4: Generics
 **What does this generic constraint do: `function fn<T extends { length: number }>(arg: T)`?**
 - A) T must be a number
 - B) T must have a length property ✅
@@ -43,7 +36,7 @@
 
 ---
 
-## Question 5: Utility Types [Medium - 60s]
+## Question 5: Utility Types
 **Which utility type makes all properties optional?**
 - A) Required<T>
 - B) Readonly<T>
@@ -52,7 +45,7 @@
 
 ---
 
-## Question 6: Conditional Types [Advanced - 90s]
+## Question 6: Conditional Types
 ```typescript
 type IsString<T> = T extends string ? "yes" : "no";
 type Result = IsString<"hello">;
@@ -65,7 +58,7 @@ type Result = IsString<"hello">;
 
 ---
 
-## Question 7: Type Guards [Medium - 60s]
+## Question 7: Type Guards
 **What keyword is used to create a user-defined type guard?**
 - A) typeof
 - B) instanceof
@@ -74,7 +67,7 @@ type Result = IsString<"hello">;
 
 ---
 
-## Question 8: Template Literal Types [Advanced - 90s]
+## Question 8: Template Literal Types
 ```typescript
 type Greeting = `Hello ${string}`;
 ```
@@ -86,7 +79,7 @@ type Greeting = `Hello ${string}`;
 
 ---
 
-## Question 9: Mapped Types [Advanced - 90s]
+## Question 9: Mapped Types
 ```typescript
 type ReadonlyProps<T> = {
   readonly [K in keyof T]: T[K]
@@ -100,7 +93,7 @@ type ReadonlyProps<T> = {
 
 ---
 
-## Question 10: Union vs Intersection [Quick - 30s]
+## Question 10: Union vs Intersection
 **What operator creates an intersection type?**
 - A) |
 - B) & ✅
@@ -109,7 +102,7 @@ type ReadonlyProps<T> = {
 
 ---
 
-## Question 11: Const Assertions [Medium - 60s]
+## Question 11: Const Assertions
 ```typescript
 const colors = ["red", "blue"] as const;
 ```
@@ -121,7 +114,7 @@ const colors = ["red", "blue"] as const;
 
 ---
 
-## Question 12: Satisfies Operator [Advanced - 90s]
+## Question 12: Satisfies Operator
 **What does the `satisfies` operator do?**
 - A) Casts to a type
 - B) Validates type without widening ✅
@@ -130,7 +123,7 @@ const colors = ["red", "blue"] as const;
 
 ---
 
-## Question 13: Discriminated Unions [Medium - 60s]
+## Question 13: Discriminated Unions
 **What makes a union type "discriminated"?**
 - A) Common property with unique literals ✅
 - B) Different property names
@@ -139,7 +132,7 @@ const colors = ["red", "blue"] as const;
 
 ---
 
-## Question 14: ReturnType Utility [Medium - 60s]
+## Question 14: ReturnType Utility
 ```typescript
 function getUser() { return { name: "Alice", age: 30 }; }
 type User = ReturnType<typeof getUser>;
@@ -152,7 +145,7 @@ type User = ReturnType<typeof getUser>;
 
 ---
 
-## Question 15: Vue 3 + TypeScript [Medium - 60s]
+## Question 15: Vue 3 + TypeScript
 **Which Vue 3 function is used to define typed props in script setup?**
 - A) defineProps ✅
 - B) props
@@ -161,7 +154,7 @@ type User = ReturnType<typeof getUser>;
 
 ---
 
-## Question 16: Type Narrowing [Quick - 30s]
+## Question 16: Type Narrowing
 **Which operator narrows a type by checking if a property exists?**
 - A) typeof
 - B) instanceof
@@ -170,7 +163,7 @@ type User = ReturnType<typeof getUser>;
 
 ---
 
-## Question 17: Tuple Types [Quick - 30s]
+## Question 17: Tuple Types
 **What's the type of: `let tuple: [string, number] = ["hello", 42]`?**
 - A) Array<string | number>
 - B) [string, number] ✅
@@ -179,7 +172,7 @@ type User = ReturnType<typeof getUser>;
 
 ---
 
-## Question 18: Enum Types [Quick - 30s]
+## Question 18: Enum Types
 **What keyword creates a const enum?**
 - A) enum
 - B) const enum ✅
@@ -188,7 +181,7 @@ type User = ReturnType<typeof getUser>;
 
 ---
 
-## Question 19: Index Signatures [Medium - 60s]
+## Question 19: Index Signatures
 ```typescript
 type StringMap = { [key: string]: number }
 ```
@@ -200,7 +193,7 @@ type StringMap = { [key: string]: number }
 
 ---
 
-## Question 20: infer Keyword [Advanced - 90s]
+## Question 20: infer Keyword
 ```typescript
 type GetReturnType<T> = T extends (...args: any[]) => infer R ? R : never;
 ```
@@ -212,7 +205,7 @@ type GetReturnType<T> = T extends (...args: any[]) => infer R ? R : never;
 
 ---
 
-## Bonus Question: TypeScript Compiler [Quick - 30s]
+## Bonus Question: TypeScript Compiler
 **Which command type-checks without emitting files?**
 - A) tsc
 - B) tsc --noEmit ✅

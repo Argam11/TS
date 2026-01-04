@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@mdi/font": "^7.3.67",
+    "graphql": "^16.12.0",
     "monaco-editor": "^0.45.0",
     "pinia": "^2.1.7",
     "prismjs": "^1.30.0",

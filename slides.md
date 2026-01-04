@@ -967,6 +967,12 @@ let numbers: number[] = [1, 2, 3];
 let strings: Array<string> = ["a", "b", "c"];
 let mixed: (number | string)[] = [1, "two", 3];
 
+// Readonly arrays (immutable)
+let readonlyNumbers: ReadonlyArray<number> = [1, 2, 3];
+let readonlyStrings: readonly string[] = ["a", "b", "c"];
+// readonlyNumbers.push(4);  // ❌ Error: Property 'push' does not exist
+// readonlyNumbers[0] = 10;  // ❌ Error: Index signature in type 'readonly number[]' only permits reading
+
 // Tuples - Fixed length arrays with specific types
 
 // 1. Regular tuples
@@ -2592,6 +2598,18 @@ Additional checks and best practices
 
 Automatic types from GraphQL schema
 
+**Setup:**
+```bash
+npm install -D @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations
+```
+
+**Generate types:**
+```bash
+npx graphql-codegen --config codegen.yml
+# or with watch mode
+npx graphql-codegen --config codegen.yml --watch
+```
+
 <div class="grid grid-cols-2 gap-4">
 
 <div>
@@ -2655,6 +2673,17 @@ OpenAPI/Swagger to TypeScript
 npm install -D openapi-typescript
 ```
 
+**Generate types:**
+```bash
+npx openapi-typescript ./api-spec.yaml -o ./types/api.ts
+# or from URL
+npx openapi-typescript https://api.example.com/openapi.json -o ./types/api.ts
+```
+
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
 **OpenAPI Spec (api-spec.yaml):**
 ```yaml
 openapi: 3.0.0
@@ -2680,23 +2709,16 @@ components:
       type: object
       required: [id, username, email]
       properties:
-        id: { type: string, format: uuid }
+        id: { type: string }
         username: { type: string }
-        email: { type: string, format: email }
+        email: { type: string }
 ```
 
----
+</div>
 
-# REST API Types - Usage
+<div>
 
-Generated types in action
-
-**Generate types:**
-```bash
-npm run openapi:generate
-```
-
-**Generated (types/api.ts):**
+**Generated Types (types/api.ts):**
 ```typescript
 export interface paths {
   "/users/{userId}": {
@@ -2707,7 +2729,8 @@ export interface paths {
       responses: {
         200: {
           content: {
-            "application/json": components["schemas"]["User"];
+            "application/json": 
+              components["schemas"]["User"];
           };
         };
       };
@@ -2726,19 +2749,24 @@ export interface components {
 }
 ```
 
+</div>
+
+</div>
+
 **Type-safe API client:**
 ```typescript
-import type { paths } from "./types/api";
+import type { paths, components } from "./types/api";
 
-async function getUser(userId: string) {
+// Using types from above
+type User = components["schemas"]["User"];
+type UserResponse = paths["/users/{userId}"]["get"]["responses"][200]["content"]["application/json"];
+
+async function getUser(userId: string): Promise<UserResponse> {
   const response = await fetch(`/users/${userId}`);
-  const data: paths["/users/{userId}"]["get"]["responses"][200]["content"]["application/json"] 
-    = await response.json();
+  const data: UserResponse = await response.json();
   
-  // data is fully typed!
-  console.log(data.username); // ✅ TypeScript knows this exists
-  // console.log(data.invalid); // ❌ Error!
-  
+  // data is { id: string; username: string; email: string; }
+  console.log(data.username); // ✅ Fully typed
   return data;
 }
 ```

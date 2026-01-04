@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 });
 
 // Swagger documentation
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve as any, swaggerUi.setup(swaggerSpec) as any);
 
 // Serve OpenAPI spec as JSON
 app.get('/api/swagger.json', (req, res) => {
