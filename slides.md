@@ -2781,11 +2781,16 @@ Automated type checking
 ```yaml
 name: TypeScript Type Check
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
 
 jobs:
   type-check:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
       
