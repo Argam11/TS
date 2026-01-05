@@ -3,8 +3,6 @@
  * Uses generated types from OpenAPI spec
  */
 
-import { paths } from "@/generated/rest-api";
-
 const API_BASE_URL = 'http://localhost:3000/api';
 
 export interface User {
