@@ -27,7 +27,7 @@ A comprehensive presentation and demo application covering all TypeScript featur
 
 This project provides a complete educational resource for TypeScript and Vue 3, including:
 
-- **Slidev Presentation**: 70-minute comprehensive presentation covering all TypeScript features
+- **Slidev Presentation**: Comprehensive presentation covering all TypeScript features
 - **Interactive Demo App**: Vue 3 application demonstrating every TypeScript concept
 - **Real-World Examples**: API integration, form validation, state management, and more
 - **Production-Ready Setup**: Complete CI/CD, type checking, and best practices
@@ -36,13 +36,12 @@ This project provides a complete educational resource for TypeScript and Vue 3, 
 
 ```
 TS/
-├── slides.md                          # Main Slidev presentation (70 min)
+├── slides.md                          # Main Slidev presentation
 ├── package.json                       # Root dependencies and scripts
-├── tsconfig.json                      # Comprehensive TypeScript configuration
+├── tsconfig.json                       # Comprehensive TypeScript configuration
 ├── codegen.yml                        # GraphQL Code Generator configuration
-├── schema.graphql                     # Example GraphQL schema
 ├── api-spec.yaml                      # Example OpenAPI specification
-├── kahoot-questions.md                # 20 quiz questions for Kahoot
+├── quiz.md                            # Quiz questions
 ├── live-coding-starter.ts             # Live coding starting point
 ├── live-coding-complete.ts            # Live coding complete solution
 ├── LIVE_CODING_SCRIPT.md              # Step-by-step live coding guide
@@ -87,7 +86,7 @@ TS/
 
 ## ✨ Features
 
-### TypeScript Coverage (100%)
+### TypeScript Coverage
 
 - **Basic Types**: Primitives, arrays, tuples, enums
 - **Object Types**: Interfaces, type aliases, index signatures
@@ -102,7 +101,7 @@ TS/
 
 ### Real-World Applications
 
-- **API Integration**: Type-safe clients, error handling, caching
+- **API Integration**: Type-safe clients, error handling
 - **GraphQL Server**: Live Apollo Server with type generation
 - **REST API Server**: Live Express server with OpenAPI/Swagger
 - **Type Generation**: Auto-generate types from live APIs

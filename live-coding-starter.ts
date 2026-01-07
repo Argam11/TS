@@ -2,7 +2,6 @@
  * 🎬 Live Coding: Type-Safe Database Query Builder
  * 
  * Goal: Build a type-safe query builder that prevents bugs at compile time
- * Time: ~7 minutes
  * 
  * Instructions:
  * 1. Follow along with LIVE_CODING_SCRIPT.md

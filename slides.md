@@ -2884,10 +2884,12 @@ defineExpose({
 <template>
   <div>
     <h1>{{ title }}</h1>
-    <input ref="inputRef" />
-    <button @click="handleClick" :disabled="disabled">
-      Count: {{ count }}
-    </button>
+    <form ref="formRef">
+      <input ref="inputRef" />
+      <button @click="handleClick" :disabled="disabled">
+        Count: {{ count }}
+      </button>
+    </form>
   </div>
 </template>
 ```
@@ -3033,39 +3035,46 @@ Type-safe state management
 
 ```typescript
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
 
-// Option 1: Composition API style (recommended)
-export const useUserStore = defineStore('user', () => {
+interface UserState {
+  user: User | null;
+  isLoading: boolean;
+}
+
+// Options API style (recommended)
+export const useUserStore = defineStore('user', {
   // State
-  const user = ref<User | null>(null);
-  const isLoading = ref(false);
+  state: (): UserState => ({
+    user: null,
+    isLoading: false
+  }),
   
-  // Getters (computed)
-  const isAuthenticated = computed(() => user.value !== null);
-  const fullName = computed(() => 
-    user.value ? `${user.value.firstName} ${user.value.lastName}` : ''
-  );
+  // Getters
+  getters: {
+    isAuthenticated: (state) => state.user !== null,
+    fullName: (state) => 
+      state.user ? `${state.user.firstName} ${state.user.lastName}` : ''
+  },
   
   // Actions
-  async function login(username: string, password: string): Promise<void> {
-    isLoading.value = true;
-    try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        body: JSON.stringify({ username, password }),
-      });
-      user.value = await response.json();
-    } finally {
-      isLoading.value = false;
+  actions: {
+    async login(username: string, password: string): Promise<void> {
+      this.isLoading = true;
+      try {
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          body: JSON.stringify({ username, password }),
+        });
+        this.user = await response.json();
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    
+    logout(): void {
+      this.user = null;
     }
   }
-  
-  function logout(): void {
-    user.value = null;
-  }
-  
-  return { user, isLoading, isAuthenticated, fullName, login, logout };
 });
 
 // Usage in component - fully typed!
