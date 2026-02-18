@@ -1017,7 +1017,7 @@ const enum Color {
 
 ---
 
-# Built-in Collections: Set, Map & WeakMap
+# Built-in Collections: Set & WeakSet, Map & WeakMap
 
 Working with JavaScript's built-in collection types
 
@@ -1452,6 +1452,139 @@ class MathUtils {
 
 console.log(MathUtils.PI); // ✅ 3.14159
 // No need to instantiate!
+```
+
+---
+
+# Subtype & Supertype
+
+Understanding type hierarchy and assignability
+
+**Subtype** → More specific (narrower)  
+**Supertype** → More general (wider)
+
+**Rule**: Subtype can be assigned to supertype ✅ | Supertype cannot be assigned to subtype ❌
+
+```typescript
+// Example 1: Object types
+type Person = { name: string };
+type Employee = { name: string; salary: number };
+
+// Employee is SUBTYPE of Person (more specific - has more properties)
+// Person is SUPERTYPE of Employee (more general - has fewer properties)
+
+let employee: Employee = { name: 'Alice', salary: 50000 };
+let person: Person = employee; // ✅ OK - subtype → supertype
+
+let person2: Person = { name: 'Bob' };
+let employee2: Employee = person2; // ❌ Error - supertype → subtype (missing 'salary')
+
+// Example 2: Literal types
+let literal: "hello" = "hello";    // "hello" is subtype of string
+let str: string = literal;         // ✅ OK - "hello" → string
+
+let str2: string = "world";
+let literal2: "hello" = str2;      // ❌ Error - string → "hello"
+
+// Example 3: Union types
+type StringOrNumber = string | number;  // Supertype
+type OnlyString = string;               // Subtype
+
+let onlyStr: OnlyString = "hello";
+let strOrNum: StringOrNumber = onlyStr; // ✅ OK - subtype → supertype
+
+let strOrNum2: StringOrNumber = 42;
+let onlyStr2: OnlyString = strOrNum2;   // ❌ Error - supertype → subtype
+
+// Example 4: Object vs object
+// Object (capital O) - Supertype of almost everything (accepts primitives)
+let obj1: Object;
+obj1 = { name: 'Alice' };          // ✅ Objects
+obj1 = 'hello';                    // ✅ Primitives (boxed)
+obj1 = 42;                         // ✅ Primitives (boxed)
+
+// object (lowercase o) - Supertype of reference types only (no primitives)
+let obj2: object;
+obj2 = { name: 'Alice' };          // ✅ Objects
+obj2 = [1, 2, 3];                  // ✅ Arrays
+obj2 = 'hello';                    // ❌ Primitives not allowed
+obj2 = 42;                         // ❌ Primitives not allowed
+```
+
+**Best Practice**: Don't use `Object` or `object`. Use specific types/interfaces instead!
+
+---
+
+# Type Hierarchy
+
+TypeScript's type system from top to bottom
+
+<div class="flex items-center justify-center mt-4">
+<div style="width: 500px;">
+
+<div style="background: #e1f5ff; border: 2px solid #4a9eff; border-radius: 12px; padding: 8px; text-align: center; font-size: 18px; font-weight: bold; color: #1e5a9e;">
+unknown
+</div>
+
+<div style="text-align: center; font-size: 20px; color: #4a9eff; padding: 4px 0;">↓</div>
+
+<div style="background: #fff4e1; border: 2px solid #ffa94a; border-radius: 12px; padding: 10px; text-align: center; font-size: 14px; font-weight: bold; color: #8a5a00;">
+Reference Types <span style="font-weight: normal;">(objects, arrays, functions, classes)</span><br/>
+Primitives <span style="font-weight: normal;">(string, number, boolean, bigint, symbol)</span><br/>
+null & undefined
+</div>
+
+<div style="text-align: center; font-size: 20px; color: #ffa94a; padding: 4px 0;">↓</div>
+
+<div style="background: #fff9e6; border: 2px solid #ffd700; border-radius: 12px; padding: 8px; text-align: center; font-size: 14px; font-weight: bold; color: #8a6d00;">
+Literal Types <span style="font-weight: normal;">("hello", 42, true)</span>
+</div>
+
+<div style="text-align: center; font-size: 20px; color: #ffd700; padding: 4px 0;">↓</div>
+
+<div style="background: #ffe1e1; border: 2px solid #ff4a4a; border-radius: 12px; padding: 8px; text-align: center; font-size: 18px; font-weight: bold; color: #9e1e1e;">
+never
+</div>
+
+</div>
+</div>
+
+**Type Descriptions:**
+
+- **`unknown`** - Top type (supertype of everything). Must narrow before use.
+- **Reference Types** - Objects, arrays, functions, classes.
+- **Primitives** - `string`, `number`, `boolean`, `bigint`, `symbol`.
+- **`null` & `undefined`** - Separate types representing absence of value.
+- **Literal Types** - Specific values like `"hello"`, `42`, `true`.
+- **`never`** - Bottom type (subtype of everything).
+- **`any`** - Escape hatch that disables type checking. Avoid using it! Use `unknown` instead for safe typing.
+
+```typescript
+// unknown - Must narrow before use
+let value: unknown = "hello";
+// value.toUpperCase(); // ❌ Error
+if (typeof value === "string") {
+  value.toUpperCase(); // ✅ OK after narrowing
+}
+
+// null & undefined - Separate types
+let nullable: string | null = null;          // ✅ Explicitly allow null
+let optional: string | undefined = undefined; // ✅ Explicitly allow undefined
+
+// With strictNullChecks: true
+let str: string = "hello";
+// str = null;        // ❌ Error - null not assignable to string
+// str = undefined;   // ❌ Error - undefined not assignable to string
+
+// any - Disables type checking (dangerous!)
+let anything: any = "hello";
+anything.toUpperCase();        // ✅ No error (but unsafe!)
+anything.nonExistent();        // ✅ No error (runtime error!)
+
+// never - Represents unreachable code
+function fail(): never {
+  throw new Error('Failed');
+}
 ```
 
 ---
@@ -2851,14 +2984,26 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
 });
 
-// Define emits with types
-interface Emits {
-  (e: 'update', value: number): void;
-  (e: 'delete', id: string): void;
-  (e: 'submit', data: { name: string; age: number }): void;
-}
+// Define emits — runtime array
+const emit = defineEmits(['change', 'update']);
 
-const emit = defineEmits<Emits>();
+// Define emits — options based (with validation)
+const emit = defineEmits({
+  change: (id: number) => id > 0,
+  update: (value: string) => value.length > 0,
+});
+
+// Define emits — type-based (call signatures)
+const emit = defineEmits<{
+  (e: 'change', id: number): void;
+  (e: 'update', value: string): void;
+}>();
+
+// Define emits — 3.3+ shorthand syntax
+const emit = defineEmits<{
+  change: [id: number];
+  update: [value: string];
+}>();
 
 // Template refs with types
 const inputRef = ref<HTMLInputElement | null>(null);
@@ -2867,10 +3012,15 @@ const formRef = ref<InstanceType<typeof SomeComponent> | null>(null);
 // Computed with inference
 const doubleCount = computed(() => props.count * 2); // number
 
-// Methods
-function handleClick(): void {
+// Methods with typed events
+function handleClick(event: MouseEvent): void {
   emit('update', props.count + 1);
-  inputRef.value?.focus(); // Safe navigation
+  inputRef.value?.focus();
+}
+
+function handleInput(event: Event): void {
+  const target = event.target as HTMLInputElement;
+  emit('change', Number(target.value));
 }
 
 // Expose methods to parent
@@ -2893,6 +3043,263 @@ defineExpose({
   </div>
 </template>
 ```
+
+---
+
+# Vue 3: ref & reactive Types
+
+Understanding Vue's reactivity types
+
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+**ref&lt;T&gt; - Reactive primitive wrapper**
+
+```typescript
+import { ref } from 'vue';
+
+// Primitive types
+const count = ref(0);              // Ref<number>
+const message = ref('Hello');      // Ref<string>
+const isActive = ref(false);       // Ref<boolean>
+
+// Object types
+interface User {
+  name: string;
+  age: number;
+}
+
+const user = ref<User>({
+  name: 'Alice',
+  age: 30
+});
+
+// Nullable refs
+const data = ref<User | null>(null);
+
+// Access value with .value
+count.value++;                     // ✅ Update
+console.log(user.value.name);      // ✅ Read
+
+// DOM refs
+const inputRef = ref<HTMLInputElement | null>(null);
+inputRef.value?.focus();           // ✅ Safe access
+```
+
+</div>
+
+<div>
+
+**reactive&lt;T&gt; - Deep reactive objects**
+
+```typescript
+import { reactive, toRefs } from 'vue';
+
+// reactive() - Makes entire object reactive (deep)
+interface User {
+  name: string;
+  age: number;
+  address: {
+    city: string;
+    country: string;
+  };
+}
+
+const user = reactive<User>({
+  name: 'Alice',
+  age: 30,
+  address: {
+    city: 'Paris',
+    country: 'France'
+  }
+}); // UnwrapNestedRefs<User>
+
+// No .value needed for reactive objects
+user.name = 'Bob';                 // ✅ Direct access
+user.address.city = 'London';      // ✅ Nested reactive
+
+// Convert reactive object to refs
+const { name, age } = toRefs(user);
+// { name: Ref<string>, age: Ref<number> }
+name.value = 'Charlie';            // ✅ Updates user.name
+```
+
+</div>
+
+</div>
+
+**ref() vs reactive()**
+
+- `ref()` → Primitives, single values, DOM elements → Requires `.value` to access
+- `reactive()` → Complex objects, nested properties → Direct property access (no `.value`)
+- Both are deeply reactive
+- `ref()` wraps the value, `reactive()` makes the object itself reactive
+
+---
+
+# Vue 3: computed Type
+
+Derived reactive state with type safety
+
+```typescript
+import { ref, computed } from 'vue';
+
+const firstName = ref('John');
+const lastName = ref('Doe');
+
+// Read-only computed (inferred type)
+const fullName = computed(() => {
+  return `${firstName.value} ${lastName.value}`;
+}); // ComputedRef<string>
+
+// Writable computed with explicit type
+const count = ref(10);
+const doubled = computed({
+  get: (): number => count.value * 2,
+  set: (value: number) => {
+    count.value = value / 2;
+  }
+}); // WritableComputedRef<number, number>
+
+doubled.value = 20;  // Sets count to 10
+console.log(count.value); // 10
+
+// Complex computed - Cart total example
+interface CartItem {
+  price: number;
+  quantity: number;
+}
+
+const cart = ref<CartItem[]>([
+  { price: 10, quantity: 2 },
+  { price: 20, quantity: 1 }
+]);
+
+const total = computed(() => {
+  return cart.value.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+}); // ComputedRef<number>
+
+console.log(total.value); // 40
+
+// Computed with complex return type
+interface ProductStats {
+  totalItems: number;
+  totalValue: number;
+  averagePrice: number;
+}
+
+const cartStats = computed((): ProductStats => {
+  const totalItems = cart.value.reduce((sum, item) => sum + item.quantity, 0);
+  const totalValue = total.value;
+  return {
+    totalItems,
+    totalValue,
+    averagePrice: totalValue / totalItems
+  };
+}); // ComputedRef<ProductStats>
+```
+
+---
+
+# Vue 3 Generic Components
+
+Type-safe reusable components with the `generic` attribute
+
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+**Define a generic component**
+
+```vue
+<script setup lang="ts" generic="T">
+defineProps<{
+  items: T[];
+  selected?: T;
+}>();
+
+const emit = defineEmits<{
+  (e: 'select', item: T): void;
+}>();
+</script>
+
+<template>
+  <ul>
+    <li v-for="(item, i) in items" :key="i"
+        @click="$emit('select', item)">
+      <slot :item="item" />
+    </li>
+  </ul>
+</template>
+```
+
+**With constraints**
+
+```vue
+<script setup lang="ts"
+  generic="T extends { id: number; label: string }">
+defineProps<{
+  options: T[];
+  modelValue?: T;
+}>();
+
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: T): void;
+}>();
+</script>
+```
+
+</div>
+
+<div>
+
+**Usage — `T` is inferred automatically**
+
+```vue
+<script setup lang="ts">
+interface User { id: number; name: string }
+
+const users: User[] = [
+  { id: 1, name: 'Alice' },
+  { id: 2, name: 'Bob' },
+];
+
+const selected = ref<User>(users[0]);
+
+function onSelect(user: User) {
+  selected.value = user;
+}
+</script>
+
+<template>
+  <!-- T inferred as User -->
+  <GenericList
+    :items="users"
+    :selected="selected"
+    @select="onSelect"
+  >
+    <template #default="{ item }">
+      {{ item.name }}  <!-- ✅ autocomplete -->
+    </template>
+  </GenericList>
+</template>
+```
+
+**Key points**
+
+- `generic="T"` — basic type parameter
+- `generic="T extends Foo"` — constrained
+- `generic="T, U"` — multiple parameters
+- Props, emits, and slots are all typed by `T`
+- The consumer never passes `T` explicitly — Vue infers it from the bound props
+
+</div>
+
+</div>
 
 ---
 
@@ -3082,6 +3489,74 @@ const userStore = useUserStore();
 userStore.login('alice', 'pass123'); // ✅ TypeScript knows the signature
 console.log(userStore.fullName); // ✅ Typed as string
 ```
+
+---
+
+# vue-tsc: Type Checking for Vue
+
+TypeScript compiler wrapper for Vue Single File Components
+
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+**What is vue-tsc?**
+
+`vue-tsc` is a TypeScript type-checking tool specifically designed for Vue 3 SFCs (Single File Components).
+
+```bash
+# Installation
+npm install -D vue-tsc typescript
+
+# Type check your Vue project
+npx vue-tsc --noEmit
+
+# Watch mode
+npx vue-tsc --noEmit --watch
+```
+
+**package.json scripts:**
+
+```json
+{
+  "scripts": {
+    "type-check": "vue-tsc --noEmit",
+    "build": "vue-tsc --noEmit && vite build"
+  }
+}
+```
+
+</div>
+
+<div>
+
+**Why vue-tsc?**
+
+- `tsc` alone cannot understand `.vue` files
+- `vue-tsc` wraps `tsc` and adds Vue SFC support
+- Checks `<script>`, `<template>`, and props/emits
+
+**Key Features:**
+
+- ✅ Type-checks `.vue` single file components
+- ✅ Validates template expressions
+- ✅ Checks props and emits types
+- ✅ Works with Volar for full IDE support
+- ✅ CI/CD integration for build pipelines
+
+**Volar + vue-tsc:**
+
+```bash
+# Recommended VSCode extensions
+# 1. Vue - Official (Volar)
+# 2. TypeScript Vue Plugin (Volar)
+```
+
+Volar provides IDE support, `vue-tsc` provides CLI type-checking.
+
+</div>
+
+</div>
 
 ---
 
