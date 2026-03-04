@@ -2073,6 +2073,9 @@ function getArea(shape: Shape): number {
       return shape.sideLength ** 2;
     case "rectangle":
       return shape.width * shape.height;
+    default:
+      const _exhaustive: never = shape;
+      throw new Error(`Unknown shape: ${JSON.stringify(_exhaustive)}`);
   }
 }
 ```
