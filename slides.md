@@ -2621,6 +2621,84 @@ expect(() => validateEmail(123)).toThrow();
 **Best Practice:** Use `@ts-expect-error` over `@ts-ignore` - it warns if the error is fixed!
 
 ---
+
+# TypeScript Terminology Glossary
+
+<style>
+.slidev-page { overflow-y: auto !important; }
+.term-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; grid-auto-flow: column; gap: 4px 10px; }
+.term-grid-5 { grid-template-rows: repeat(5, auto); }
+.term-grid-7 { grid-template-rows: repeat(7, auto); }
+.term { font-size: 10px; line-height: 1.35; padding: 3px 6px; border-radius: 5px; background: rgba(255,255,255,0.04); border-left: 3px solid #4a9eff; }
+.term b { color: #7dd3fc; font-size: 10.5px; }
+.term code { font-size: 9px; padding: 0 2px; }
+.term-adv { border-left-color: #a78bfa; }
+.term-adv b { color: #c4b5fd; }
+.term-key { border-left-color: #34d399; }
+.term-key b { color: #6ee7b7; }
+.section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin: 6px 0 2px; padding: 2px 0; opacity: 0.6; }
+</style>
+
+<div class="section-label mt-1" style="color: #7dd3fc;">Fundamentals</div>
+<div class="term-grid term-grid-5">
+  <div class="term"><b>Type Annotation</b> — The <code>: Type</code> syntax to explicitly declare a type.</div>
+  <div class="term"><b>Type Inference (Implicit Typing)</b> — TS automatically determines a type without an annotation.</div>
+  <div class="term"><b>Type Assertion (Explicit Typing)</b> — Treat a value as a specific type via <code>as Type</code>.</div>
+  <div class="term"><b>Literal Type</b> — A type for one exact value: <code>"hello"</code>, <code>42</code>, <code>true</code>.</div>
+  <div class="term"><b>Template Literal Type</b> — Backtick syntax combining string literal types.</div>
+  <div class="term"><b>Type Guard</b> — A runtime check that narrows a type in a conditional.</div>
+  <div class="term"><b>Type Narrowing</b> — TS refines a broad type to a specific one in branches.</div>
+  <div class="term"><b>Type Widening</b> — TS infers a broader type for mutable variables.</div>
+  <div class="term"><b>Index Signature</b> — <code>[key: string]: Type</code> for arbitrary object keys.</div>
+  <div class="term"><b>Indexed Access Type</b> — <code>Type["key"]</code> to look up a property's type.</div>
+  <div class="term"><b>Mapped Type</b> — Creates a new type by transforming each property of another.</div>
+  <div class="term"><b>Conditional Type</b> — <code>T extends U ? X : Y</code> — type-level ternary.</div>
+  <div class="term"><b>Distributive Conditional</b> — Evaluates separately over each union member.</div>
+</div>
+
+<div class="section-label" style="color: #6ee7b7;">Keywords & Core Types</div>
+<div class="term-grid term-grid-5">
+  <div class="term term-key"><b>Generic</b> — A type parameter <code>&lt;T&gt;</code> for reusable, type-safe code.</div>
+  <div class="term term-key"><b>Generic Constraint</b> — <code>extends</code> limits what types a generic accepts.</div>
+  <div class="term term-key"><b>Union Type</b> — <code>A | B</code> — a value can be one of several types.</div>
+  <div class="term term-key"><b>Intersection Type</b> — <code>A &amp; B</code> — combines all properties of each.</div>
+  <div class="term term-key"><b>Discriminated Union</b> — Union with a shared literal "tag" for narrowing.</div>
+  <div class="term term-key"><b>Tuple</b> — Fixed-length array with a specific type per position.</div>
+  <div class="term term-key"><b>Enum</b> — Named constants mapping to numeric or string values.</div>
+  <div class="term term-key"><b>keyof</b> — Produces a union of all property key names of a type.</div>
+  <div class="term term-key"><b>typeof</b> — Extracts the TS type from a runtime value.</div>
+  <div class="term term-key"><b>infer</b> — Captures a type from a pattern in conditional types.</div>
+  <div class="term term-key"><b>never</b> — Bottom type — values that can never occur.</div>
+  <div class="term term-key"><b>unknown</b> — Top type — type-safe <code>any</code>, requires narrowing.</div>
+  <div class="term term-key"><b>void</b> — Function does not return a meaningful value.</div>
+  <div class="term term-key"><b>any</b> — Disables all type checking on a value.</div>
+  <div class="term term-key"><b>as const</b> — Deeply readonly with narrowest literal types.</div>
+</div>
+
+<div class="section-label" style="color: #c4b5fd;">Advanced & Structural</div>
+<div class="term-grid term-grid-7">
+  <div class="term term-adv"><b>satisfies</b> — Validates a type without widening the inferred type.</div>
+  <div class="term term-adv"><b>Type Alias</b> — A named reference (<code>type</code>) for any type expression.</div>
+  <div class="term term-adv"><b>Interface</b> — A named object shape contract; extendable and mergeable.</div>
+  <div class="term term-adv"><b>Declaration Merging</b> — Same-named declarations auto-combine into one.</div>
+  <div class="term term-adv"><b>Declaration File (.d.ts)</b> — Types-only file for JavaScript libraries.</div>
+  <div class="term term-adv"><b>Ambient Declaration</b> — <code>declare</code> describes runtime types not in TS source.</div>
+  <div class="term term-adv"><b>Module Augmentation</b> — Add type declarations to an existing module.</div>
+  <div class="term term-adv"><b>Structural Typing</b> — Compatibility by shape, not by type name.</div>
+  <div class="term term-adv"><b>Nominal Typing</b> — Compatibility by name; simulated via branded types.</div>
+  <div class="term term-adv"><b>Branded Type</b> — Phantom property to prevent accidental assignment.</div>
+  <div class="term term-adv"><b>Covariance</b> — Subtype assignable where supertype is expected.</div>
+  <div class="term term-adv"><b>Contravariance</b> — Broader param type assignable to narrower one.</div>
+  <div class="term term-adv"><b>Type Predicate</b> — <code>param is Type</code> return annotation for type guards.</div>
+  <div class="term term-adv"><b>Assertion Function</b> — <code>asserts</code> narrows the type after the call.</div>
+  <div class="term term-adv"><b>Non-null Assertion (!)</b> — Tells compiler a value isn't <code>null</code>/<code>undefined</code>.</div>
+  <div class="term term-adv"><b>Definite Assignment (!:)</b> — Property will be assigned before use.</div>
+  <div class="term term-adv"><b>Utility Types</b> — Built-in generics: <code>Partial</code>, <code>Pick</code>, <code>Omit</code>, <code>Record</code>…</div>
+  <div class="term term-adv"><b>Function Overload</b> — Multiple signatures for different arg/return types.</div>
+  <div class="term term-adv"><b>Decorator</b> — <code>@fn</code> that modifies classes, methods, or properties.</div>
+</div>
+
+---
 layout: center
 class: text-center
 ---
