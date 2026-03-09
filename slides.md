@@ -2641,9 +2641,9 @@ expect(() => validateEmail(123)).toThrow();
 
 <div class="section-label mt-1" style="color: #7dd3fc;">Fundamentals</div>
 <div class="term-grid term-grid-5">
-  <div class="term"><b>Type Annotation</b> — The <code>: Type</code> syntax to explicitly declare a type.</div>
-  <div class="term"><b>Type Inference (Implicit Typing)</b> — TS automatically determines a type without an annotation.</div>
-  <div class="term"><b>Type Assertion (Explicit Typing)</b> — Treat a value as a specific type via <code>as Type</code>.</div>
+  <div class="term"><b>Type Annotation (Explicit Typing)</b> — You write the type yourself using <code>: Type</code> syntax.</div>
+  <div class="term"><b>Type Inference (Implicit Typing)</b> — TS figures out the type automatically.</div>
+  <div class="term"><b>Type Assertion (Type Casting)</b> — You override the compiler's type with <code>as Type</code> or <code>&lt;Type&gt;</code>.</div>
   <div class="term"><b>Literal Type</b> — A type for one exact value: <code>"hello"</code>, <code>42</code>, <code>true</code>.</div>
   <div class="term"><b>Template Literal Type</b> — Backtick syntax combining string literal types.</div>
   <div class="term"><b>Type Guard</b> — A runtime check that narrows a type in a conditional.</div>
