@@ -991,6 +991,13 @@ type StringNumberBooleans = [string, number, ...boolean[]];
 const data1: StringNumberBooleans = ["hello", 42, true, false, true];
 const data2: StringNumberBooleans = ["world", 10]; // OK, booleans optional
 
+// --- erasableSyntaxOnly (TS 5.8+) ---
+// Disallows runtime TS constructs that aren't part of ECMAScript after erasing types.
+// One-line CLI: tsc --erasableSyntaxOnly          // same checks; pair with --noEmit to type-check only
+// Or tsconfig:   "erasableSyntaxOnly": true      // under compilerOptions
+// enum / const enum below fail this mode: they emit runtime objects or special emit.
+// Prefer: `as const` object maps or string literal unions for type-stripping / bundler-only pipelines.
+
 // Enums - Numeric
 enum Direction {
   Up,    // 0
@@ -1354,6 +1361,8 @@ class User {
 }
 
 // Parameter properties - shorter syntax
+// ⚠️ Not "erasable only": TS emits assignments in the constructor body.
+// With "erasableSyntaxOnly": true in tsconfig, this pattern is an error.
 class Product {
   constructor(
     public id: number,
@@ -1365,6 +1374,18 @@ class Product {
 const product = new Product(1, "Laptop", 999);
 console.log(product.id); // ✅ 1
 // console.log(product.price); // ❌ Error: private
+
+// Erasable alternative (works with erasableSyntaxOnly: true):
+class Product {
+   id: number;
+   name: string;
+   private price: number;
+   constructor(id: number, name: string, price: number) {
+     this.id = id;
+     this.name = name;
+     this.price = price;
+   }
+}
 
 // Constructor overloading
 class Point {
@@ -2723,6 +2744,7 @@ Understanding every compiler option
     "experimentalDecorators": true,        // Enable decorators
     "emitDecoratorMetadata": true,         // Emit metadata for decorators
     "useDefineForClassFields": true,       // Use Define semantics for class fields
+    "erasableSyntaxOnly": false,           // TS 5.8+: true = only syntax that strips to valid JS (forbids enum, ctor param props, value namespaces, …)
 
     /* Modules */
     "module": "ESNext",                    // Module system: CommonJS, AMD, UMD, ESNext
@@ -2805,6 +2827,7 @@ Additional checks and best practices
 - Enable `noUnusedLocals` and `noUnusedParameters` for clean code
 - Use `noUncheckedIndexedAccess` for safer array/object access
 - Set `moduleResolution: "bundler"` for modern bundlers (Vite, webpack)
+- Optional **TS 5.8+**: `"erasableSyntaxOnly": true` if you want only type-only syntax (no `enum`, no constructor parameter properties, no value-emitting namespaces)—aligns with “strip types and run” workflows
 
 ---
 

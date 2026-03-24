@@ -7,6 +7,7 @@
     "experimentalDecorators": true,              // Enable experimental support for decorators
     "emitDecoratorMetadata": true,               // Emit design-type metadata for decorated declarations
     "useDefineForClassFields": true,             // Use Define semantics for class fields
+    "erasableSyntaxOnly": false,                 // TS 5.8+: when true, error on syntax that is not purely erasable (enums, constructor parameter properties, value namespaces, etc.)
 
     /* Modules */
     "module": "ESNext",                          // Specify module code generation
